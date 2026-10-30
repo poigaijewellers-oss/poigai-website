@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { LayoutGrid, LogOut, Settings, Tag } from "lucide-react";
+import { LayoutGrid, LogOut, Settings, Star, Tag } from "lucide-react";
 import { useAdminAuth } from "../../hooks/useAdminAuth";
 
 export default function AdminLayout() {
@@ -29,6 +29,9 @@ export default function AdminLayout() {
         </NavLink>
         <NavLink to="/admin/settings" className={({ isActive }) => (isActive ? "is-active" : "")}>
           <Settings size={15} /> Site settings
+        </NavLink>
+        <NavLink to="/admin/feedback" className={({ isActive }) => (isActive ? "is-active" : "")}>
+          <Star size={15} /> Feedback
         </NavLink>
       </nav>
       <div className="admin-content">

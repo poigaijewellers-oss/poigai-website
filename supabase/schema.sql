@@ -25,6 +25,9 @@ create table if not exists products (
   label text,
   is_featured boolean not null default false,
   is_active boolean not null default true,
+  offer_ends_at timestamptz,
+  is_combo boolean not null default false,
+  combo_includes text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -106,3 +109,27 @@ insert into categories (name, slug, sort_order) values
   ('Earrings', 'earrings', 2),
   ('Rings', 'rings', 3)
 on conflict (name) do nothing;
+
+-- Customer feedback / testimonials
+create table if not exists testimonials (
+  id uuid primary key default gen_random_uuid(),
+  customer_name text not null,
+  message text not null,
+  rating int not null check (rating between 1 and 5),
+  is_approved boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+alter table testimonials enable row level security;
+
+create policy "Public can read approved testimonials" on testimonials
+  for select using (is_approved = true or auth.role() = 'authenticated');
+
+create policy "Anyone can submit feedback" on testimonials
+  for insert with check (is_approved = false);
+
+create policy "Admins update testimonials" on testimonials
+  for update using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+
+create policy "Admins delete testimonials" on testimonials
+  for delete using (auth.role() = 'authenticated');

@@ -23,7 +23,11 @@ img { max-width: 100%; }
   padding: 8px 14px; background: var(--maroon); color: #fff8f1;
   font-size: 9px; letter-spacing: .16em; text-transform: uppercase; text-align: center;
 }
-.announcement span { color: var(--gold); }
+.announcement span { display: inline-block; color: var(--gold); animation: twinkle 2.4s ease-in-out infinite; }
+@keyframes twinkle {
+  0%, 100% { opacity: .5; transform: scale(.85); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
 
 /* ---------- Header ---------- */
 .site-header {
@@ -41,8 +45,21 @@ img { max-width: 100%; }
   display: none; align-items: center; justify-content: center; justify-self: start;
   width: 38px; height: 38px; background: transparent; border: 1px solid var(--gold); color: var(--maroon);
 }
-.brand { justify-self: center; display: block; width: 66px; height: 66px; }
-.brand img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.brand {
+  justify-self: center; display: flex; align-items: center; gap: 13px; padding: 4px;
+}
+.brand img {
+  width: 76px; height: 76px; object-fit: contain; display: block; flex-shrink: 0;
+  transition: transform .45s cubic-bezier(.34,1.56,.64,1), filter .3s ease;
+}
+.brand:hover img { transform: scale(1.08) rotate(-4deg); filter: drop-shadow(0 6px 14px #7a2e2e30); }
+.brand-text { display: flex; flex-direction: column; line-height: 1.15; text-align: left; }
+.brand-text strong {
+  font: 26px 'Italiana', serif; color: var(--maroon); letter-spacing: .05em; white-space: nowrap;
+}
+.brand-text em {
+  margin-top: 2px; font: 10px 'Noto Serif Tamil', serif; font-style: normal; color: var(--rose); white-space: nowrap;
+}
 .header-actions { justify-self: end; display: flex; align-items: center; gap: 12px; }
 .icon-button {
   position: relative; display: inline-flex; align-items: center; justify-content: center;
@@ -68,9 +85,22 @@ img { max-width: 100%; }
 
 /* ---------- Hero ---------- */
 .hero {
-  min-height: 590px; padding: 66px 8%; display: grid; grid-template-columns: .92fr 1.08fr;
-  gap: 7%; align-items: center; background: var(--ivory);
+  position: relative; overflow: hidden; min-height: 590px; padding: 66px 8%; display: grid;
+  grid-template-columns: .92fr 1.08fr; gap: 7%; align-items: center; background: var(--ivory);
 }
+.floating-sparkles { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.floating-sparkles span {
+  position: absolute; color: var(--gold); opacity: .6; animation: float-sparkle 6s ease-in-out infinite;
+}
+.floating-sparkles span:nth-child(1) { top: 12%; left: 6%; font-size: 15px; animation-delay: 0s; }
+.floating-sparkles span:nth-child(2) { top: 75%; left: 42%; font-size: 10px; color: var(--maroon); animation-delay: 1.4s; }
+.floating-sparkles span:nth-child(3) { top: 22%; left: 56%; font-size: 18px; animation-delay: 2.8s; }
+.floating-sparkles span:nth-child(4) { top: 60%; left: 88%; font-size: 12px; color: var(--maroon); animation-delay: 4.2s; }
+@keyframes float-sparkle {
+  0%, 100% { transform: translateY(0) scale(1); opacity: .45; }
+  50% { transform: translateY(-16px) scale(1.2); opacity: 1; }
+}
+.hero-copy, .hero-visual { position: relative; z-index: 1; }
 .eyebrow { margin: 0; color: var(--maroon); font-size: 9px; font-weight: 700; letter-spacing: .22em; }
 .hero h1, .section-heading h2, .brand-story h2 {
   margin: 22px 0; color: var(--maroon); font: 400 clamp(54px, 6vw, 78px)/.98 'Italiana', serif;
@@ -133,14 +163,15 @@ img { max-width: 100%; }
 .product-image { position: relative; aspect-ratio: 4/5; overflow: hidden; background: #efe5dc; }
 .product-image img { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform .5s; }
 .product-card:hover .product-image img { transform: scale(1.035); }
-.product-label {
-  position: absolute; z-index: 1; top: 14px; left: 14px; padding: 8px 10px;
-  background: #fbf7f2ed; color: var(--maroon); font-size: 8px; letter-spacing: .08em; text-transform: uppercase;
+.product-badges {
+  position: absolute; z-index: 1; top: 14px; left: 14px; display: flex; flex-direction: column;
+  gap: 6px; align-items: flex-start;
 }
-.product-offer {
-  position: absolute; z-index: 1; top: 50px; left: 14px; padding: 8px 10px;
-  background: var(--maroon); color: #fff8f1; font-size: 8px; letter-spacing: .08em; text-transform: uppercase;
-}
+.quick-view-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+.badge { padding: 7px 10px; font-size: 8px; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+.badge-label { background: #fbf7f2ed; color: var(--maroon); }
+.badge-combo { background: var(--gold); color: #4a2c17; }
+.badge-offer { background: var(--maroon); color: #fff8f1; animation: twinkle 2.4s ease-in-out infinite; }
 .wishlist-dot {
   position: absolute; z-index: 2; top: 14px; right: 14px; width: 32px; height: 32px;
   display: flex; align-items: center; justify-content: center; border: 0; border-radius: 50%;
@@ -187,6 +218,8 @@ img { max-width: 100%; }
 .quick-view-price strong { font-size: 18px; color: var(--maroon); }
 .quick-view-price s { color: #a68f85; font-size: 12px; }
 .quick-view-description { color: #765f58; font-size: 12px; line-height: 1.8; }
+.quick-view-combo { margin: 0; padding: 10px 12px; background: #f6efe4; color: #6b5a3a; font-size: 11px; line-height: 1.7; }
+.quick-view-combo strong { color: var(--maroon); }
 .quick-view-actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
 .quick-view-actions .primary-link { margin-top: 0; }
 .wishlist-toggle {
@@ -229,8 +262,44 @@ img { max-width: 100%; }
   border: 1px solid var(--gold); border-radius: 50%; color: var(--maroon); font: 25px 'Italiana', serif;
 }
 .brand-story h2 { margin: 18px 0; font-size: 55px; }
-.brand-story > p:not(.eyebrow) { max-width: 490px; margin: 0 auto; color: #765f58; font-size: 11px; line-height: 2; }
+.brand-story p:not(.eyebrow) { max-width: 490px; margin: 0 auto; color: #765f58; font-size: 11px; line-height: 2; }
 .story-tamil { display: block; margin-top: 25px; color: var(--maroon); font: 12px 'Noto Serif Tamil', serif; }
+
+/* ---------- Scroll reveal & kolam divider ---------- */
+.reveal { opacity: 0; transform: translateY(26px); transition: opacity .75s ease, transform .75s ease; }
+.reveal.is-visible { opacity: 1; transform: none; }
+.kolam-divider {
+  height: 20px; background-image: radial-gradient(circle, var(--gold) 2px, transparent 2.6px);
+  background-size: 24px 20px; background-position: center; background-repeat: repeat-x; opacity: .5;
+}
+
+/* ---------- Testimonials & feedback ---------- */
+.testimonials-section { padding: 80px 7% 60px; }
+.testimonial-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+.testimonial-card { padding: 26px 22px; background: #fff; border: 1px solid #eee0d4; }
+.testimonial-stars { display: flex; gap: 3px; color: var(--gold); margin-bottom: 12px; }
+.testimonial-card p { margin: 0 0 16px; color: #5c4941; font: 14px 'Italiana', serif; line-height: 1.7; }
+.testimonial-card strong { color: var(--maroon); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+
+.feedback-cta { padding: 20px 7% 80px; display: flex; justify-content: center; }
+.feedback-form {
+  width: 100%; max-width: 480px; padding: 34px 30px; background: var(--ivory);
+  display: flex; flex-direction: column; gap: 14px; text-align: center;
+}
+.feedback-form h3 { margin: 0; font: 28px 'Italiana', serif; color: var(--maroon); }
+.feedback-stars { display: flex; justify-content: center; gap: 6px; }
+.feedback-stars button { background: none; border: 0; color: var(--gold); padding: 4px; transition: transform .15s; }
+.feedback-stars button:hover { transform: scale(1.15); }
+.feedback-form label {
+  display: flex; flex-direction: column; gap: 6px; text-align: left; font-size: 10px;
+  letter-spacing: .06em; text-transform: uppercase; color: #8a6d64;
+}
+.feedback-form input, .feedback-form textarea {
+  font-size: 13px; padding: 11px 12px; border: 1px solid #e3d5c8; background: #fff; font-family: inherit; color: var(--ink);
+}
+.feedback-form button[type="submit"] { align-self: center; margin-top: 4px; }
+.feedback-form-done { align-items: center; justify-content: center; }
+.feedback-form-done p { margin: 0; color: var(--maroon); font: 16px 'Italiana', serif; }
 
 /* ---------- Footer ---------- */
 footer {
@@ -321,6 +390,8 @@ footer > small { grid-column: 1/-1; padding-top: 17px; border-top: 1px solid #ff
 .admin-category-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .admin-category-list li { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border: 1px solid #f0e7dd; font-size: 13px; }
 .admin-category-list li button { background: none; border: 0; color: #8a3a3a; }
+.admin-feedback-row { align-items: flex-start !important; }
+.admin-feedback-row p { margin: 6px 0; color: #765f58; font-size: 12px; line-height: 1.6; }
 .admin-settings-form { display: flex; flex-direction: column; gap: 16px; max-width: 520px; }
 .admin-settings-form label { display: flex; flex-direction: column; gap: 6px; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: #8a6d64; }
 .admin-settings-form input, .admin-settings-form textarea { font-size: 13px; padding: 10px 12px; border: 1px solid #e3d5c8; font-family: inherit; }
@@ -351,12 +422,16 @@ footer > small { grid-column: 1/-1; padding-top: 17px; border-top: 1px solid #ff
   .site-nav { display: none; }
   .menu-toggle { display: inline-flex; }
   .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .testimonial-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* ---------- Phone ---------- */
 @media (max-width: 760px) {
   .site-header { min-height: 78px; padding: 0 5%; }
-  .brand { width: 54px; height: 54px; }
+  .brand { gap: 9px; }
+  .brand img { width: 52px; height: 52px; }
+  .brand-text strong { font-size: 19px; }
+  .brand-text em { font-size: 8px; }
   .header-order { padding: 10px; }
   .header-order span { display: none; }
   .icon-button { width: 34px; height: 34px; }
@@ -382,6 +457,10 @@ footer > small { grid-column: 1/-1; padding-top: 17px; border-top: 1px solid #ff
   .brand-story h2 { font-size: 43px; }
   footer { grid-template-columns: 1fr; padding: 34px 6% 18px; }
   .footer-actions { justify-self: start; }
+  .testimonials-section { padding: 56px 5% 40px; }
+  .testimonial-grid { grid-template-columns: 1fr; gap: 14px; }
+  .feedback-cta { padding: 10px 5% 56px; }
+  .feedback-form { padding: 26px 20px; }
   .admin-content { padding: 16px; }
   .admin-tabs { padding: 0 16px; }
   .admin-table th, .admin-table td { font-size: 11px; padding: 8px; }
@@ -391,4 +470,6 @@ footer > small { grid-column: 1/-1; padding-top: 17px; border-top: 1px solid #ff
   .site-nav { gap: 8px; }
   .section-heading h2 { font-size: 38px; }
   .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .brand-text { display: none; }
+  .brand img { width: 46px; height: 46px; }
 }

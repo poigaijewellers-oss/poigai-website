@@ -18,6 +18,18 @@ export interface Product {
   label: string | null;
   is_featured: boolean;
   is_active: boolean;
+  offer_ends_at: string | null;
+  is_combo: boolean;
+  combo_includes: string | null;
+  created_at: string;
+}
+
+export interface Testimonial {
+  id: string;
+  customer_name: string;
+  message: string;
+  rating: number;
+  is_approved: boolean;
   created_at: string;
 }
 

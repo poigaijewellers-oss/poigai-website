@@ -19,6 +19,9 @@ export type ProductInput = {
   label: string;
   is_featured: boolean;
   is_active: boolean;
+  offer_ends_at: string | null;
+  is_combo: boolean;
+  combo_includes: string | null;
 };
 
 export async function createProduct(input: ProductInput) {
@@ -79,5 +82,17 @@ export async function deleteCategory(id: string) {
 export async function updateSiteSettings(settings: SiteSettings) {
   const client = requireClient();
   const { error } = await client.from("site_settings").update(settings).eq("id", 1);
+  if (error) throw error;
+}
+
+export async function approveTestimonial(id: string) {
+  const client = requireClient();
+  const { error } = await client.from("testimonials").update({ is_approved: true }).eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteTestimonial(id: string) {
+  const client = requireClient();
+  const { error } = await client.from("testimonials").delete().eq("id", id);
   if (error) throw error;
 }

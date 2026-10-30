@@ -3,6 +3,7 @@ import type { ChangeEvent, FormEvent } from "react";
 import { X } from "lucide-react";
 import { createProduct, updateProduct, uploadProductImage } from "../../lib/adminApi";
 import { useBodyScrollLock } from "../../hooks/useBodyScrollLock";
+import { toDatetimeLocalValue } from "../../lib/productUtils";
 import type { Category, Product } from "../../lib/types";
 
 type ProductFormProps = {
@@ -25,6 +26,9 @@ export function ProductForm({ product, categories, onClose, onSaved }: ProductFo
   const [images, setImages] = useState<string[]>(product?.images ?? []);
   const [isFeatured, setIsFeatured] = useState(product?.is_featured ?? false);
   const [isActive, setIsActive] = useState(product?.is_active ?? true);
+  const [offerEndsAt, setOfferEndsAt] = useState(toDatetimeLocalValue(product?.offer_ends_at ?? null));
+  const [isCombo, setIsCombo] = useState(product?.is_combo ?? false);
+  const [comboIncludes, setComboIncludes] = useState(product?.combo_includes ?? "");
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -64,6 +68,9 @@ export function ProductForm({ product, categories, onClose, onSaved }: ProductFo
       label: label.trim(),
       is_featured: isFeatured,
       is_active: isActive,
+      offer_ends_at: offerPrice && offerEndsAt ? new Date(offerEndsAt).toISOString() : null,
+      is_combo: isCombo,
+      combo_includes: isCombo ? comboIncludes.trim() || null : null,
     };
     try {
       if (product) {
@@ -130,6 +137,16 @@ export function ProductForm({ product, categories, onClose, onSaved }: ProductFo
               placeholder="Optional"
             />
           </label>
+          {offerPrice && (
+            <label>
+              Offer ends (optional)
+              <input
+                type="datetime-local"
+                value={offerEndsAt}
+                onChange={(event) => setOfferEndsAt(event.target.value)}
+              />
+            </label>
+          )}
           <label>
             Stock
             <input
@@ -178,7 +195,22 @@ export function ProductForm({ product, categories, onClose, onSaved }: ProductFo
             <input type="checkbox" checked={isActive} onChange={(event) => setIsActive(event.target.checked)} />
             Visible on site
           </label>
+          <label className="admin-checkbox">
+            <input type="checkbox" checked={isCombo} onChange={(event) => setIsCombo(event.target.checked)} />
+            Combo / set
+          </label>
         </div>
+
+        {isCombo && (
+          <label>
+            What's included (shown to customers)
+            <input
+              value={comboIncludes}
+              onChange={(event) => setComboIncludes(event.target.value)}
+              placeholder="e.g. Necklace, matching earrings & gift box"
+            />
+          </label>
+        )}
 
         {error && <p className="admin-form-error">{error}</p>}
 

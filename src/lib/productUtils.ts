@@ -7,11 +7,28 @@ export function firstImage(product: Product): string {
 }
 
 export function effectivePrice(product: Product): number {
-  return product.offer_price ?? product.price;
+  return hasOffer(product) ? (product.offer_price as number) : product.price;
 }
 
 export function hasOffer(product: Product): boolean {
-  return product.offer_price != null && product.offer_price < product.price;
+  if (product.offer_price == null || product.offer_price >= product.price) return false;
+  if (product.offer_ends_at && new Date(product.offer_ends_at).getTime() <= Date.now()) return false;
+  return true;
+}
+
+export function offerCountdownLabel(offerEndsAt: string | null): string | null {
+  if (!offerEndsAt) return null;
+  const diffMs = new Date(offerEndsAt).getTime() - Date.now();
+  if (diffMs <= 0) return null;
+  const totalMinutes = Math.floor(diffMs / 60_000);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  if (hours >= 24) {
+    const days = Math.floor(hours / 24);
+    return `Ends in ${days}d ${hours % 24}h`;
+  }
+  if (hours > 0) return `Ends in ${hours}h ${minutes}m`;
+  return `Ends in ${minutes}m`;
 }
 
 export function stockStatus(stock: number): { text: string; tone: "out" | "low" | "in" } {
@@ -20,17 +37,25 @@ export function stockStatus(stock: number): { text: string; tone: "out" | "low" 
   return { text: "In stock", tone: "in" };
 }
 
+export function toDatetimeLocalValue(iso: string | null): string {
+  if (!iso) return "";
+  const date = new Date(iso);
+  const pad = (value: number) => String(value).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
 export function buildEnquiryMessage(product?: Product): string {
   if (!product) {
     return "Vanakkam POIGAI! I'd love to explore your collection.";
   }
   const price = effectivePrice(product);
   const stock = stockStatus(product.stock);
+  const comboNote = product.is_combo ? " (combo set)" : "";
   const stockNote =
     stock.tone === "out"
       ? " I see it's currently out of stock — please let me know when it's back."
       : "";
-  return `Vanakkam POIGAI! I'm interested in ${product.name} (₹${price}).${stockNote} Please share the availability and details.`;
+  return `Vanakkam POIGAI! I'm interested in ${product.name}${comboNote} (₹${price}).${stockNote} Please share the availability and details.`;
 }
 
 export function enquireOnWhatsApp(whatsappNumber: string, product?: Product) {

@@ -11,6 +11,12 @@ export function Hero({ settings }: HeroProps) {
 
   return (
     <section className="hero">
+      <div className="floating-sparkles" aria-hidden="true">
+        <span>✦</span>
+        <span>✧</span>
+        <span>✦</span>
+        <span>✧</span>
+      </div>
       <div className="hero-copy">
         <p className="eyebrow">THE EVERYDAY JEWELLERY EDIT</p>
         <h1>

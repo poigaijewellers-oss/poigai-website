@@ -1,6 +1,6 @@
 import { Heart, MessageCircle, Search } from "lucide-react";
 import type { Product } from "../../lib/types";
-import { effectivePrice, firstImage, hasOffer, stockStatus } from "../../lib/productUtils";
+import { effectivePrice, firstImage, hasOffer, offerCountdownLabel, stockStatus } from "../../lib/productUtils";
 
 type ProductCardProps = {
   product: Product;
@@ -13,12 +13,16 @@ type ProductCardProps = {
 export function ProductCard({ product, isWishlisted, onToggleWishlist, onQuickView, onEnquire }: ProductCardProps) {
   const stock = stockStatus(product.stock);
   const offer = hasOffer(product);
+  const countdown = offer ? offerCountdownLabel(product.offer_ends_at) : null;
 
   return (
     <article className="product-card">
       <div className="product-image">
-        {product.label && <span className="product-label">{product.label}</span>}
-        {offer && <span className="product-offer">Offer</span>}
+        <div className="product-badges">
+          {product.label && <span className="badge badge-label">{product.label}</span>}
+          {product.is_combo && <span className="badge badge-combo">Combo</span>}
+          {offer && <span className="badge badge-offer">{countdown ?? "Offer"}</span>}
+        </div>
         <button
           type="button"
           className={`wishlist-dot ${isWishlisted ? "is-active" : ""}`}

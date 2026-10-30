@@ -46,6 +46,12 @@ This is the only account that can sign in to `/admin` — there's no public sign
    label, description and photos (uploaded straight to Supabase Storage).
 4. The storefront updates immediately — no code changes or redeploys needed.
 
+## Updating an existing project (v2: offers, combos, feedback)
+If you already ran `schema.sql` before, run `supabase/migration_002_offers_combo_feedback.sql`
+in the SQL Editor too — it adds the one-day offer countdown, combo-product fields, and the
+`testimonials` table used by the storefront's feedback section. Safe to run once; re-running
+only errors on the `create policy` lines if they already exist, which you can ignore.
+
 ## Deploying
 Since this is a single-page app with client-side routes (`/`, `/admin`, `/admin/*`),
 your host needs to send every URL to `index.html` so refreshing `/admin` doesn't 404:

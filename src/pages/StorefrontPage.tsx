@@ -2,24 +2,33 @@ import { useMemo, useState } from "react";
 import { AnnouncementBar } from "../components/layout/AnnouncementBar";
 import { SiteHeader } from "../components/layout/SiteHeader";
 import { SiteFooter } from "../components/layout/SiteFooter";
+import { KolamDivider } from "../components/common/KolamDivider";
+import { Reveal } from "../components/common/Reveal";
 import { Hero } from "../components/storefront/Hero";
 import { BrandStory } from "../components/storefront/BrandStory";
 import { ProductToolbar, type SortOption } from "../components/storefront/ProductToolbar";
 import { ProductGrid } from "../components/storefront/ProductGrid";
 import { ProductQuickView } from "../components/storefront/ProductQuickView";
 import { WishlistDrawer } from "../components/storefront/WishlistDrawer";
+import { Testimonials } from "../components/storefront/Testimonials";
+import { FeedbackForm } from "../components/storefront/FeedbackForm";
 import { useProducts } from "../hooks/useProducts";
 import { useCategories } from "../hooks/useCategories";
 import { useSiteSettings } from "../hooks/useSiteSettings";
 import { useWishlist } from "../hooks/useWishlist";
-import { enquireOnWhatsApp } from "../lib/productUtils";
+import { useTestimonials } from "../hooks/useTestimonials";
+import { useNowTick } from "../hooks/useNowTick";
+import { effectivePrice, enquireOnWhatsApp } from "../lib/productUtils";
 import type { Product } from "../lib/types";
 
 export default function StorefrontPage() {
+  useNowTick(); // keeps offer countdowns fresh without a full page refresh
+
   const { products, loading, isLive } = useProducts();
   const { categories } = useCategories();
   const { settings } = useSiteSettings();
   const { wishlist, toggle, count } = useWishlist();
+  const { testimonials, loading: testimonialsLoading } = useTestimonials();
 
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | "all">("all");
@@ -45,10 +54,10 @@ export default function StorefrontPage() {
     const sorted = [...list];
     switch (sort) {
       case "price-asc":
-        sorted.sort((a, b) => (a.offer_price ?? a.price) - (b.offer_price ?? b.price));
+        sorted.sort((a, b) => effectivePrice(a) - effectivePrice(b));
         break;
       case "price-desc":
-        sorted.sort((a, b) => (b.offer_price ?? b.price) - (a.offer_price ?? a.price));
+        sorted.sort((a, b) => effectivePrice(b) - effectivePrice(a));
         break;
       case "newest":
         sorted.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
@@ -78,7 +87,7 @@ export default function StorefrontPage() {
       </div>
 
       <section className="shop-section" id="shop">
-        <div className="section-heading">
+        <Reveal className="section-heading">
           <div>
             <p className="eyebrow">A LITTLE SOMETHING FOR YOU</p>
             <h2>
@@ -86,7 +95,7 @@ export default function StorefrontPage() {
             </h2>
           </div>
           <p className="section-aside">Small details. Beautifully yours.</p>
-        </div>
+        </Reveal>
 
         <ProductToolbar
           query={query}
@@ -116,7 +125,16 @@ export default function StorefrontPage() {
         )}
       </section>
 
+      <KolamDivider />
       <BrandStory />
+      <KolamDivider />
+
+      <Testimonials testimonials={testimonials} loading={testimonialsLoading} />
+
+      <section className="feedback-cta">
+        <FeedbackForm />
+      </section>
+
       <SiteFooter settings={settings} onEnquire={() => handleEnquire()} />
 
       <ProductQuickView

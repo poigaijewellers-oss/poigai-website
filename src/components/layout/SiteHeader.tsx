@@ -11,6 +11,7 @@ type SiteHeaderProps = {
 const NAV_LINKS = [
   { href: "#shop", label: "Shop" },
   { href: "#story", label: "Our story" },
+  { href: "#feedback", label: "Feedback" },
   { href: "#contact", label: "Contact" },
 ];
 
@@ -36,8 +37,12 @@ export function SiteHeader({ wishlistCount, onOpenWishlist, onEnquire }: SiteHea
         ))}
       </nav>
 
-      <Link className="brand" to="/" aria-label="POIGAI home">
-        <img src="/poigai-logo-mark.png" alt="POIGAI — அழகு மலரும் இடம்" />
+      <Link className="brand" to="/" aria-label="POIGAI home — அழகு மலரும் இடம்">
+        <img src="/poigai-logo-mark.png" alt="" />
+        <span className="brand-text">
+          <strong>POIGAI</strong>
+          <em>அழகு மலரும் இடம்.</em>
+        </span>
       </Link>
 
       <div className="header-actions">

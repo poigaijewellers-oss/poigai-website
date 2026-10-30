@@ -45,6 +45,9 @@ export function useProducts(options: { includeInactive?: boolean } = {}) {
         label: row.label,
         is_featured: row.is_featured,
         is_active: row.is_active,
+        offer_ends_at: row.offer_ends_at,
+        is_combo: row.is_combo,
+        combo_includes: row.combo_includes,
         created_at: row.created_at,
       }));
       setProducts(mapped);

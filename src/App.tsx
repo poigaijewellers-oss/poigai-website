@@ -5,6 +5,7 @@ import AdminLayout from "./pages/admin/AdminLayout";
 import ProductsManager from "./pages/admin/ProductsManager";
 import CategoriesManager from "./pages/admin/CategoriesManager";
 import SettingsManager from "./pages/admin/SettingsManager";
+import FeedbackManager from "./pages/admin/FeedbackManager";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 
 export default function App() {
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="products" element={<ProductsManager />} />
         <Route path="categories" element={<CategoriesManager />} />
         <Route path="settings" element={<SettingsManager />} />
+        <Route path="feedback" element={<FeedbackManager />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
