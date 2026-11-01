@@ -87,6 +87,22 @@ export async function updateSiteSettings(settings: SiteSettings) {
   if (error) throw error;
 }
 
+export async function createTestimonialAdmin(input: {
+  customer_name: string;
+  message: string;
+  rating: number;
+  image_url: string | null;
+}) {
+  const client = requireClient();
+  const { data, error } = await client
+    .from("testimonials")
+    .insert({ ...input, is_approved: true })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
 export async function approveTestimonial(id: string) {
   const client = requireClient();
   const { error } = await client.from("testimonials").update({ is_approved: true }).eq("id", id);

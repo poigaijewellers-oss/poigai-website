@@ -131,6 +131,9 @@ create policy "Public can read approved testimonials" on testimonials
 create policy "Anyone can submit feedback" on testimonials
   for insert with check (is_approved = false);
 
+create policy "Admins insert testimonials" on testimonials
+  for insert with check (auth.role() = 'authenticated');
+
 create policy "Admins update testimonials" on testimonials
   for update using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
 
