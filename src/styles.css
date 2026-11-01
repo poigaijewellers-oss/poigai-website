@@ -522,14 +522,6 @@ footer > small { grid-column: 1/-1; padding-top: 17px; border-top: 1px solid #ff
 }
 .admin-setup-notice code, .admin-form-warning code { background: #f1e5dc; padding: 1px 5px; }
 
-/* ---------- Large screens ---------- */
-@media (min-width: 1440px) {
-  .site-header, .hero, .values-strip, .shop-section, .brand-story,
-  .reels-section, .testimonials-section, .feedback-cta, footer {
-    max-width: 1440px; margin-left: auto; margin-right: auto;
-  }
-}
-
 /* ---------- Tablet & below: collapse nav ---------- */
 @media (max-width: 1024px) {
   .site-nav { display: none; }
