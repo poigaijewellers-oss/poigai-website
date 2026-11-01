@@ -28,6 +28,11 @@ export function Testimonials({ testimonials, loading }: TestimonialsProps) {
         <div className="testimonial-grid">
           {testimonials.map((testimonial) => (
             <article className="testimonial-card" key={testimonial.id}>
+              {testimonial.image_url && (
+                <div className="testimonial-photo">
+                  <img src={testimonial.image_url} alt="" />
+                </div>
+              )}
               <div className="testimonial-stars" aria-label={`${testimonial.rating} out of 5 stars`}>
                 {Array.from({ length: 5 }).map((_, index) => (
                   <Star key={index} size={14} fill={index < testimonial.rating ? "currentColor" : "none"} />

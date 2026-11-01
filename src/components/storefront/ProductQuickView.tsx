@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Heart, MessageCircle, X } from "lucide-react";
 import type { Product } from "../../lib/types";
 import { effectivePrice, firstImage, hasOffer, offerCountdownLabel, stockStatus } from "../../lib/productUtils";
@@ -13,11 +14,18 @@ type ProductQuickViewProps = {
 
 export function ProductQuickView({ product, onClose, onEnquire, isWishlisted, onToggleWishlist }: ProductQuickViewProps) {
   useBodyScrollLock(Boolean(product));
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [product?.id]);
 
   if (!product) return null;
   const stock = stockStatus(product.stock);
   const offer = hasOffer(product);
   const countdown = offer ? offerCountdownLabel(product.offer_ends_at) : null;
+  const gallery = product.images.length > 0 ? product.images : [firstImage(product)];
+  const activeImage = gallery[activeIndex] ?? gallery[0];
 
   return (
     <div className="quick-view" role="dialog" aria-modal="true" aria-label={`${product.name} quick view`}>
@@ -27,7 +35,22 @@ export function ProductQuickView({ product, onClose, onEnquire, isWishlisted, on
           <X size={18} />
         </button>
         <div className="quick-view-image">
-          <img src={firstImage(product)} alt={`${product.name} jewellery`} />
+          <img src={activeImage} alt={`${product.name} jewellery`} />
+          {gallery.length > 1 && (
+            <div className="quick-view-thumbs">
+              {gallery.map((image, index) => (
+                <button
+                  type="button"
+                  key={image + index}
+                  className={index === activeIndex ? "is-active" : ""}
+                  onClick={() => setActiveIndex(index)}
+                  aria-label={`Show photo ${index + 1}`}
+                >
+                  <img src={image} alt="" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
         <div className="quick-view-details">
           <div className="quick-view-badges">

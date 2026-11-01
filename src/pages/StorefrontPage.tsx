@@ -12,11 +12,13 @@ import { ProductQuickView } from "../components/storefront/ProductQuickView";
 import { WishlistDrawer } from "../components/storefront/WishlistDrawer";
 import { Testimonials } from "../components/storefront/Testimonials";
 import { FeedbackForm } from "../components/storefront/FeedbackForm";
+import { ReelsSection } from "../components/storefront/ReelsSection";
 import { useProducts } from "../hooks/useProducts";
 import { useCategories } from "../hooks/useCategories";
 import { useSiteSettings } from "../hooks/useSiteSettings";
 import { useWishlist } from "../hooks/useWishlist";
 import { useTestimonials } from "../hooks/useTestimonials";
+import { useReels } from "../hooks/useReels";
 import { useNowTick } from "../hooks/useNowTick";
 import { effectivePrice, enquireOnWhatsApp } from "../lib/productUtils";
 import type { Product } from "../lib/types";
@@ -29,6 +31,7 @@ export default function StorefrontPage() {
   const { settings } = useSiteSettings();
   const { wishlist, toggle, count } = useWishlist();
   const { testimonials, loading: testimonialsLoading } = useTestimonials();
+  const { reels, loading: reelsLoading } = useReels();
 
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | "all">("all");
@@ -128,6 +131,8 @@ export default function StorefrontPage() {
       <KolamDivider />
       <BrandStory />
       <KolamDivider />
+
+      <ReelsSection reels={reels} loading={reelsLoading} />
 
       <Testimonials testimonials={testimonials} loading={testimonialsLoading} />
 

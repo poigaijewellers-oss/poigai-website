@@ -40,6 +40,8 @@ create table if not exists site_settings (
 Lasting charm.',
   hero_subheading text not null default 'Jewellery that feels like you. Thoughtfully picked pieces for everyday moments, little celebrations and everything in between.',
   instagram_url text not null default 'https://instagram.com/',
+  theme_primary text not null default '#7a2e2e',
+  theme_accent text not null default '#c9b298',
   updated_at timestamptz not null default now()
 );
 
@@ -116,6 +118,7 @@ create table if not exists testimonials (
   customer_name text not null,
   message text not null,
   rating int not null check (rating between 1 and 5),
+  image_url text,
   is_approved boolean not null default false,
   created_at timestamptz not null default now()
 );
@@ -133,3 +136,35 @@ create policy "Admins update testimonials" on testimonials
 
 create policy "Admins delete testimonials" on testimonials
   for delete using (auth.role() = 'authenticated');
+
+-- Instagram Reels shown on the storefront
+create table if not exists reels (
+  id uuid primary key default gen_random_uuid(),
+  instagram_url text not null,
+  caption text,
+  sort_order int not null default 0,
+  is_active boolean not null default true,
+  created_at timestamptz not null default now()
+);
+
+alter table reels enable row level security;
+
+create policy "Public can read active reels" on reels
+  for select using (is_active = true or auth.role() = 'authenticated');
+
+create policy "Admins manage reels" on reels
+  for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+
+-- Storage bucket for customer feedback photos (public read + public upload)
+insert into storage.buckets (id, name, public)
+values ('feedback-images', 'feedback-images', true)
+on conflict (id) do nothing;
+
+create policy "Public can view feedback images" on storage.objects
+  for select using (bucket_id = 'feedback-images');
+
+create policy "Anyone can upload feedback images" on storage.objects
+  for insert with check (bucket_id = 'feedback-images');
+
+create policy "Admins manage feedback images" on storage.objects
+  for all using (bucket_id = 'feedback-images' and auth.role() = 'authenticated');

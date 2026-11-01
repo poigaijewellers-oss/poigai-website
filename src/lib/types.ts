@@ -29,8 +29,17 @@ export interface Testimonial {
   customer_name: string;
   message: string;
   rating: number;
+  image_url: string | null;
   is_approved: boolean;
   created_at: string;
+}
+
+export interface Reel {
+  id: string;
+  instagram_url: string;
+  caption: string | null;
+  sort_order: number;
+  is_active: boolean;
 }
 
 export interface SiteSettings {
@@ -39,4 +48,6 @@ export interface SiteSettings {
   hero_heading: string;
   hero_subheading: string;
   instagram_url: string;
+  theme_primary: string;
+  theme_accent: string;
 }

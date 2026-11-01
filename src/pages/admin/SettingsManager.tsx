@@ -75,6 +75,32 @@ export default function SettingsManager() {
             onChange={(event) => setForm({ ...form, instagram_url: event.target.value })}
           />
         </label>
+
+        <div className="admin-form-row">
+          <label className="admin-color-field">
+            Primary colour (headings, buttons)
+            <div className="admin-color-row">
+              <input
+                type="color"
+                value={form.theme_primary}
+                onChange={(event) => setForm({ ...form, theme_primary: event.target.value })}
+              />
+              <span>{form.theme_primary}</span>
+            </div>
+          </label>
+          <label className="admin-color-field">
+            Accent colour (borders, highlights)
+            <div className="admin-color-row">
+              <input
+                type="color"
+                value={form.theme_accent}
+                onChange={(event) => setForm({ ...form, theme_accent: event.target.value })}
+              />
+              <span>{form.theme_accent}</span>
+            </div>
+          </label>
+        </div>
+
         {error && <p className="admin-form-error">{error}</p>}
         {saved && <p className="admin-form-success">Saved.</p>}
         <button type="submit" className="admin-primary-button" disabled={saving}>

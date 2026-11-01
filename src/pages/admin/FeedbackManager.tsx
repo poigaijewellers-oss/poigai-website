@@ -38,6 +38,7 @@ export default function FeedbackManager() {
         <ul className="admin-category-list">
           {testimonials.map((testimonial) => (
             <li key={testimonial.id} className="admin-feedback-row">
+              {testimonial.image_url && <img src={testimonial.image_url} alt="" className="admin-thumb" />}
               <div>
                 <strong>{testimonial.customer_name}</strong> — {"★".repeat(testimonial.rating)}
                 <p>{testimonial.message}</p>

@@ -6,9 +6,13 @@ import ProductsManager from "./pages/admin/ProductsManager";
 import CategoriesManager from "./pages/admin/CategoriesManager";
 import SettingsManager from "./pages/admin/SettingsManager";
 import FeedbackManager from "./pages/admin/FeedbackManager";
+import ReelsManager from "./pages/admin/ReelsManager";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
+import { useApplyTheme } from "./hooks/useApplyTheme";
 
 export default function App() {
+  useApplyTheme();
+
   return (
     <Routes>
       <Route path="/" element={<StorefrontPage />} />
@@ -24,6 +28,7 @@ export default function App() {
         <Route index element={<Navigate to="products" replace />} />
         <Route path="products" element={<ProductsManager />} />
         <Route path="categories" element={<CategoriesManager />} />
+        <Route path="reels" element={<ReelsManager />} />
         <Route path="settings" element={<SettingsManager />} />
         <Route path="feedback" element={<FeedbackManager />} />
       </Route>

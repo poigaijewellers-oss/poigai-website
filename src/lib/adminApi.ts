@@ -1,4 +1,5 @@
 import { supabase } from "./supabaseClient";
+import { compressImage } from "./imageCompression";
 import type { SiteSettings } from "./types";
 
 function requireClient() {
@@ -46,9 +47,10 @@ export async function deleteProduct(id: string) {
 
 export async function uploadProductImage(file: File): Promise<string> {
   const client = requireClient();
+  const compressed = await compressImage(file);
   const extension = file.name.split(".").pop() ?? "jpg";
   const path = `${crypto.randomUUID()}.${extension}`;
-  const { error } = await client.storage.from("product-images").upload(path, file, {
+  const { error } = await client.storage.from("product-images").upload(path, compressed, {
     cacheControl: "3600",
     upsert: false,
   });
@@ -94,5 +96,24 @@ export async function approveTestimonial(id: string) {
 export async function deleteTestimonial(id: string) {
   const client = requireClient();
   const { error } = await client.from("testimonials").delete().eq("id", id);
+  if (error) throw error;
+}
+
+export async function createReel(input: { instagram_url: string; caption: string; sort_order: number }) {
+  const client = requireClient();
+  const { data, error } = await client.from("reels").insert(input).select().single();
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteReel(id: string) {
+  const client = requireClient();
+  const { error } = await client.from("reels").delete().eq("id", id);
+  if (error) throw error;
+}
+
+export async function toggleReelActive(id: string, isActive: boolean) {
+  const client = requireClient();
+  const { error } = await client.from("reels").update({ is_active: isActive }).eq("id", id);
   if (error) throw error;
 }
