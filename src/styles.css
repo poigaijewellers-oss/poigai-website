@@ -404,10 +404,16 @@ img { max-width: 100%; }
 
 /* ---------- Reels ---------- */
 .reels-section { padding: 70px 7%; }
-.reels-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 22px;
+.reels-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; }
+.reel-card {
+  width: 340px; max-width: 100%; overflow: hidden; border-radius: 10px;
+  background: #fff; box-shadow: 0 14px 34px #7a2e2e1f;
 }
-.reels-grid .instagram-media { margin: 0 auto !important; width: 100% !important; }
+.reel-card .instagram-media,
+.reel-card iframe {
+  width: 100% !important; min-width: 0 !important; max-width: 100% !important;
+  margin: 0 !important; border: 0 !important; border-radius: 10px !important;
+}
 
 /* ---------- Footer ---------- */
 footer {

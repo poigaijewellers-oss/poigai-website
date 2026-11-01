@@ -42,16 +42,17 @@ export function ReelsSection({ reels, loading }: ReelsSectionProps) {
       </Reveal>
       <div className="reels-grid">
         {reels.map((reel) => (
-          <blockquote
-            key={reel.id}
-            className="instagram-media"
-            data-instgrm-permalink={reel.instagram_url}
-            data-instgrm-version="14"
-          >
-            <a href={reel.instagram_url} target="_blank" rel="noreferrer">
-              {reel.caption || "View on Instagram"}
-            </a>
-          </blockquote>
+          <div className="reel-card" key={reel.id}>
+            <blockquote
+              className="instagram-media"
+              data-instgrm-permalink={reel.instagram_url}
+              data-instgrm-version="14"
+            >
+              <a href={reel.instagram_url} target="_blank" rel="noreferrer">
+                {reel.caption || "View on Instagram"}
+              </a>
+            </blockquote>
+          </div>
         ))}
       </div>
     </section>
