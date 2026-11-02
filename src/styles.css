@@ -679,18 +679,6 @@ html { scrollbar-color: #c9b298 #f6e9dc; }
 .reels-arrow:hover:not(:disabled) { background: var(--maroon); color: #fff8f1; transform: scale(1.08); }
 .reels-arrow:disabled { opacity: 0; pointer-events: none; }
 
-/* Phones: drop the edge mask and card rescaling, which repaint on every scroll frame and make swiping stutter */
-@media (max-width: 760px), (hover: none) {
-  .reels-track {
-    -webkit-mask-image: none; mask-image: none; transition: none; scroll-behavior: auto;
-    -webkit-overflow-scrolling: touch; gap: 14px;
-  }
-  .reels-carousel.is-scrollable .reel-card { transform: none; opacity: 1; box-shadow: 0 10px 22px #7a2e2e1f; }
-  .reels-carousel.is-scrollable .reel-card.is-active { transform: none; box-shadow: 0 10px 22px #7a2e2e1f; }
-  .reel-card { transition: none; }
-  .reels-arrow { display: none !important; }
-}
-
 .reels-dots { display: flex; justify-content: center; gap: 8px; margin-top: 6px; }
 .reels-dots button {
   width: 8px; height: 8px; padding: 0; border: 0; border-radius: 999px; background: #d9c6b4;
