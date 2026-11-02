@@ -27,7 +27,7 @@ import { useReels } from "../hooks/useReels";
 import { useNowTick } from "../hooks/useNowTick";
 import { useImageProtection } from "../hooks/useImageProtection";
 import { effectivePrice, enquireAboutWishlist, enquireOnWhatsApp } from "../lib/productUtils";
-import type { Product } from "../lib/types";
+import type { HomepageSection, Product } from "../lib/types";
 
 export default function StorefrontPage() {
   useNowTick(); // keeps offer countdowns fresh without a full page refresh
@@ -40,6 +40,8 @@ export default function StorefrontPage() {
   const { testimonials, loading: testimonialsLoading } = useTestimonials();
   const { reels, loading: reelsLoading } = useReels();
   const { recent, remember } = useRecentlyViewed();
+  const hiddenSections = settings.hidden_sections ?? [];
+  const show = (section: HomepageSection) => !hiddenSections.includes(section);
 
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | "all">("all");
@@ -123,16 +125,19 @@ export default function StorefrontPage() {
         wishlistCount={wishlistCount}
         onOpenWishlist={() => setWishlistOpen(true)}
         onEnquire={() => handleEnquire()}
+        hiddenSections={hiddenSections}
       />
       <Hero settings={settings} />
 
-      <div className="values-strip" aria-label="POIGAI values">
-        <span>CURATED WITH CARE</span>
-        <b>✦</b>
-        <span>EVERYDAY ELEGANCE</span>
-        <b>✦</b>
-        <span>CHOSEN FOR YOU</span>
-      </div>
+      {show("values_strip") && (
+        <div className="values-strip" aria-label="POIGAI values">
+          <span>CURATED WITH CARE</span>
+          <b>✦</b>
+          <span>EVERYDAY ELEGANCE</span>
+          <b>✦</b>
+          <span>CHOSEN FOR YOU</span>
+        </div>
+      )}
 
       {!loading && (
         <ProductShelves
@@ -141,10 +146,12 @@ export default function StorefrontPage() {
           onToggleWishlist={toggle}
           onQuickView={openProduct}
           onEnquire={handleEnquire}
+          showNewArrivals={show("new_arrivals")}
+          showBestsellers={show("bestsellers")}
         />
       )}
 
-      <BrandStatement />
+      {show("brand_statement") && <BrandStatement />}
 
       <section className="shop-section" id="shop">
         <Reveal className="section-heading">
@@ -177,7 +184,7 @@ export default function StorefrontPage() {
           loading={loading}
         />
 
-        <RecentlyViewed products={recentProducts} onOpen={openProduct} />
+        {show("recently_viewed") && <RecentlyViewed products={recentProducts} onOpen={openProduct} />}
 
         {!isLive && (
           <p className="preview-note">
@@ -187,17 +194,23 @@ export default function StorefrontPage() {
         )}
       </section>
 
+      {show("brand_story") && (
+        <>
+          <KolamDivider />
+          <BrandStory />
+        </>
+      )}
       <KolamDivider />
-      <BrandStory />
-      <KolamDivider />
 
-      <ReelsSection reels={reels} loading={reelsLoading} />
+      {show("reels") && <ReelsSection reels={reels} loading={reelsLoading} />}
 
-      <Testimonials testimonials={testimonials} loading={testimonialsLoading} />
+      {show("testimonials") && <Testimonials testimonials={testimonials} loading={testimonialsLoading} />}
 
-      <section className="feedback-cta">
-        <FeedbackForm />
-      </section>
+      {show("feedback_form") && (
+        <section className="feedback-cta">
+          <FeedbackForm />
+        </section>
+      )}
 
       <SiteFooter settings={settings} onEnquire={() => handleEnquire()} />
 

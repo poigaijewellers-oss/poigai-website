@@ -1,5 +1,5 @@
 import { Instagram, MessageCircle } from "lucide-react";
-import type { SiteSettings } from "../../lib/types";
+import type { HomepageSection, SiteSettings } from "../../lib/types";
 import { KolamDivider } from "../common/KolamDivider";
 
 type SiteFooterProps = {
@@ -7,14 +7,16 @@ type SiteFooterProps = {
   onEnquire: () => void;
 };
 
-const FOOTER_LINKS = [
+const FOOTER_LINKS: { href: string; label: string; section?: HomepageSection }[] = [
   { href: "#shop", label: "Shop" },
-  { href: "#story", label: "Our story" },
-  { href: "#reels", label: "Reels" },
-  { href: "#feedback", label: "Feedback" },
+  { href: "#story", label: "Our story", section: "brand_story" },
+  { href: "#reels", label: "Reels", section: "reels" },
+  { href: "#feedback", label: "Feedback", section: "testimonials" },
 ];
 
 export function SiteFooter({ settings, onEnquire }: SiteFooterProps) {
+  const hidden = settings.hidden_sections ?? [];
+  const links = FOOTER_LINKS.filter((link) => !link.section || !hidden.includes(link.section));
   return (
     <>
       <KolamDivider />
@@ -30,7 +32,7 @@ export function SiteFooter({ settings, onEnquire }: SiteFooterProps) {
           <div className="footer-col">
             <h4>Explore</h4>
             <nav>
-              {FOOTER_LINKS.map((link) => (
+              {links.map((link) => (
                 <a key={link.href} href={link.href}>
                   {link.label}
                 </a>

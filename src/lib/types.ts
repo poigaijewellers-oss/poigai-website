@@ -42,6 +42,20 @@ export interface Reel {
   is_active: boolean;
 }
 
+export const HOMEPAGE_SECTIONS = [
+  { key: "values_strip", label: "Values strip under the hero" },
+  { key: "new_arrivals", label: "New arrivals" },
+  { key: "bestsellers", label: "Bestsellers" },
+  { key: "brand_statement", label: "Tamil brand statement (பொய்கை — அழகு மலரும் இடம்.)" },
+  { key: "recently_viewed", label: "Recently viewed" },
+  { key: "brand_story", label: "Brand story" },
+  { key: "reels", label: "Instagram reels" },
+  { key: "testimonials", label: "Customer feedback" },
+  { key: "feedback_form", label: "Share your feedback form" },
+] as const;
+
+export type HomepageSection = (typeof HOMEPAGE_SECTIONS)[number]["key"];
+
 export interface SiteSettings {
   announcement_text: string;
   whatsapp_number: string;
@@ -49,6 +63,8 @@ export interface SiteSettings {
   hero_subheading: string;
   // Missing until migration_005 has been run; empty keeps the default photo.
   hero_image_url?: string | null;
+  // Homepage sections switched off in the admin panel (migration_006).
+  hidden_sections?: HomepageSection[];
   instagram_url: string;
   theme_primary: string;
   theme_accent: string;

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useSiteSettings } from "../../hooks/useSiteSettings";
 import { updateSiteSettings, uploadProductImage } from "../../lib/adminApi";
+import { HOMEPAGE_SECTIONS } from "../../lib/types";
 
 export default function SettingsManager() {
   const { settings, loading, refresh } = useSiteSettings();
@@ -46,7 +47,9 @@ export default function SettingsManager() {
       setError(
         message.includes("hero_image_url")
           ? "The hero photo needs a quick database update first: run supabase/migration_005_hero_image.sql in the Supabase SQL editor, then save again."
-          : message,
+          : message.includes("hidden_sections")
+            ? "Section switches need a quick database update first: run supabase/migration_006_section_toggles.sql in the Supabase SQL editor, then save again."
+            : message,
       );
     } finally {
       setSaving(false);
@@ -117,6 +120,32 @@ export default function SettingsManager() {
             onChange={(event) => setForm({ ...form, instagram_url: event.target.value })}
           />
         </label>
+
+        <fieldset className="admin-sections">
+          <legend>Homepage sections</legend>
+          <p>Switch a section off to hide it from the website. The hero and the full collection always show.</p>
+          {HOMEPAGE_SECTIONS.map((section) => {
+            const hidden = form.hidden_sections ?? [];
+            const isOn = !hidden.includes(section.key);
+            return (
+              <label key={section.key} className="admin-switch">
+                <input
+                  type="checkbox"
+                  role="switch"
+                  checked={isOn}
+                  onChange={() =>
+                    setForm({
+                      ...form,
+                      hidden_sections: isOn ? [...hidden, section.key] : hidden.filter((key) => key !== section.key),
+                    })
+                  }
+                />
+                <span className="admin-switch-track" aria-hidden="true" />
+                <span className="admin-switch-label">{section.label}</span>
+              </label>
+            );
+          })}
+        </fieldset>
 
         <div className="admin-form-row">
           <label className="admin-color-field">

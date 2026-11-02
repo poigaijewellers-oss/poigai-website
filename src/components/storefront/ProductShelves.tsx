@@ -10,6 +10,8 @@ type ProductShelvesProps = {
   onToggleWishlist: (id: string) => void;
   onQuickView: (product: Product) => void;
   onEnquire: (product: Product) => void;
+  showNewArrivals: boolean;
+  showBestsellers: boolean;
 };
 
 type Shelf = { key: string; label: string; tamil: string; items: Product[] };
@@ -17,10 +19,19 @@ type Shelf = { key: string; label: string; tamil: string; items: Product[] };
 const SHELF_SIZE = 10;
 
 // New arrivals = added in the last 30 days; Bestsellers = pieces marked Featured in the admin panel.
-export function ProductShelves({ products, wishlistIds, onToggleWishlist, onQuickView, onEnquire }: ProductShelvesProps) {
+export function ProductShelves({
+  products,
+  wishlistIds,
+  onToggleWishlist,
+  onQuickView,
+  onEnquire,
+  showNewArrivals,
+  showBestsellers,
+}: ProductShelvesProps) {
   const now = Date.now();
-  const shelves: Shelf[] = [
-    {
+  const shelves: Shelf[] = [];
+  if (showNewArrivals) {
+    shelves.push({
       key: "new",
       label: "New arrivals",
       tamil: "புதிய வரவுகள்",
@@ -28,25 +39,28 @@ export function ProductShelves({ products, wishlistIds, onToggleWishlist, onQuic
         .filter((product) => isNewArrival(product, now))
         .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
         .slice(0, SHELF_SIZE),
-    },
-    {
+    });
+  }
+  if (showBestsellers) {
+    shelves.push({
       key: "best",
       label: "Bestsellers",
       tamil: "அதிகம் விரும்பப்பட்டவை",
       items: products.filter((product) => product.is_featured).slice(0, SHELF_SIZE),
-    },
-  ].filter((shelf) => shelf.items.length > 0);
+    });
+  }
+  const filled = shelves.filter((shelf) => shelf.items.length > 0);
 
   const [activeKey, setActiveKey] = useState<string | null>(null);
-  if (shelves.length === 0) return null;
-  const active = shelves.find((shelf) => shelf.key === activeKey) ?? shelves[0];
+  if (filled.length === 0) return null;
+  const active = filled.find((shelf) => shelf.key === activeKey) ?? filled[0];
 
   return (
     <section className="shelves-section" aria-label="New arrivals and bestsellers">
       <Reveal className="shelves-head">
         <p className="eyebrow" lang="ta">{active.tamil}</p>
         <div className="shelves-tabs" role="tablist" aria-label="Collections">
-          {shelves.map((shelf) => (
+          {filled.map((shelf) => (
             <button
               key={shelf.key}
               type="button"

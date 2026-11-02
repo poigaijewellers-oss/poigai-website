@@ -816,6 +816,25 @@ footer {
   border-radius: 48% 48% 2px 2px; background: #f3e9df; color: #9b8980; font-size: 12px; text-align: center;
 }
 .admin-hero-preview img { width: 100%; height: 100%; object-fit: cover; }
+.admin-sections { display: grid; gap: 4px; margin: 0; padding: 16px 18px; border: 1px solid #e3d5c8; background: #fffaf4; }
+.admin-sections legend { padding: 0 6px; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: #8a6d64; }
+.admin-sections p { margin: 0 0 8px; font-size: 12px; color: #9b8980; }
+.admin-settings-form .admin-switch {
+  position: relative; flex-direction: row; align-items: center; gap: 12px; padding: 7px 0; cursor: pointer;
+  font-size: 13px; letter-spacing: 0; text-transform: none; color: var(--ink);
+}
+.admin-settings-form .admin-switch input { position: absolute; opacity: 0; width: 1px; height: 1px; padding: 0; }
+.admin-switch-track {
+  position: relative; flex: 0 0 38px; height: 22px; border-radius: 999px; background: #dccdc2; transition: background .25s ease;
+}
+.admin-switch-track::after {
+  content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%;
+  background: #fff; box-shadow: 0 1px 3px #0003; transition: transform .25s ease;
+}
+.admin-switch input:checked + .admin-switch-track { background: var(--maroon); }
+.admin-switch input:checked + .admin-switch-track::after { transform: translateX(16px); }
+.admin-switch input:focus-visible + .admin-switch-track { outline: 2px solid var(--gold); outline-offset: 2px; }
+.admin-switch input:not(:checked) ~ .admin-switch-label { color: #a8968d; }
 .admin-hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
 .admin-text-button { padding: 0; border: 0; background: none; color: var(--maroon); font-size: 12px; text-decoration: underline; }
 .admin-settings-form label { display: flex; flex-direction: column; gap: 6px; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: #8a6d64; }

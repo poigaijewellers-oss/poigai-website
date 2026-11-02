@@ -1,22 +1,25 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Heart, Menu, MessageCircle, X } from "lucide-react";
+import type { HomepageSection } from "../../lib/types";
 
 type SiteHeaderProps = {
   wishlistCount: number;
   onOpenWishlist: () => void;
   onEnquire: () => void;
+  hiddenSections?: HomepageSection[];
 };
 
-const NAV_LINKS = [
+const NAV_LINKS: { href: string; label: string; section?: HomepageSection }[] = [
   { href: "#shop", label: "Shop" },
-  { href: "#story", label: "Our story" },
-  { href: "#feedback", label: "Feedback" },
+  { href: "#story", label: "Our story", section: "brand_story" },
+  { href: "#feedback", label: "Feedback", section: "testimonials" },
   { href: "#contact", label: "Contact" },
 ];
 
-export function SiteHeader({ wishlistCount, onOpenWishlist, onEnquire }: SiteHeaderProps) {
+export function SiteHeader({ wishlistCount, onOpenWishlist, onEnquire, hiddenSections = [] }: SiteHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const links = NAV_LINKS.filter((link) => !link.section || !hiddenSections.includes(link.section));
 
   return (
     <header className="site-header">
@@ -30,7 +33,7 @@ export function SiteHeader({ wishlistCount, onOpenWishlist, onEnquire }: SiteHea
       </button>
 
       <nav className="site-nav" aria-label="Main navigation">
-        {NAV_LINKS.map((link) => (
+        {links.map((link) => (
           <a key={link.href} href={link.href}>
             {link.label}
           </a>
@@ -57,7 +60,7 @@ export function SiteHeader({ wishlistCount, onOpenWishlist, onEnquire }: SiteHea
 
       {menuOpen && (
         <div className="mobile-nav" role="dialog" aria-label="Site menu">
-          {NAV_LINKS.map((link) => (
+          {links.map((link) => (
             <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)}>
               {link.label}
             </a>
