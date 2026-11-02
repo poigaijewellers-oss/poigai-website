@@ -17,14 +17,16 @@ type ProductCardProps = {
   onToggleWishlist: (id: string) => void;
   onQuickView: (product: Product) => void;
   onEnquire: (product: Product) => void;
+  // Inside a swipeable row, show just the cover photo so a swipe moves the row, not the photos.
+  coverOnly?: boolean;
 };
 
-export function ProductCard({ product, isWishlisted, onToggleWishlist, onQuickView, onEnquire }: ProductCardProps) {
+export function ProductCard({ product, isWishlisted, onToggleWishlist, onQuickView, onEnquire, coverOnly }: ProductCardProps) {
   const stock = stockStatus(product.stock);
   const offer = hasOffer(product);
   const countdown = offer ? offerCountdownLabel(product.offer_ends_at) : null;
   const wishlistLabel = isWishlisted ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`;
-  const gallery = product.images.length > 0 ? product.images : [firstImage(product)];
+  const gallery = product.images.length > 0 && !coverOnly ? product.images : [firstImage(product)];
 
   return (
     <article className="product-card">

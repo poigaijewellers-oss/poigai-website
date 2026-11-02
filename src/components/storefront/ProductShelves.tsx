@@ -92,6 +92,7 @@ export function ProductShelves({
             onToggleWishlist={onToggleWishlist}
             onQuickView={onQuickView}
             onEnquire={onEnquire}
+            coverOnly
           />
         ))}
       </div>

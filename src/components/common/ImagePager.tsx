@@ -61,7 +61,7 @@ export function ImagePager({ images, alt, index, onIndexChange, onImageClick, sh
   const several = images.length > 1;
 
   return (
-    <div className="pager">
+    <div className={`pager ${several ? "" : "pager-single"}`}>
       <div className="pager-track" ref={trackRef}>
         {images.map((src, i) => (
           <div className="pager-slide" key={`${src}-${i}`}>
