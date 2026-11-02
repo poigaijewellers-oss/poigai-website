@@ -20,6 +20,8 @@ body {
 a { color: inherit; text-decoration: none; }
 button { font: inherit; cursor: pointer; }
 img { max-width: 100%; }
+/* Storefront photos: no iPhone long-press save menu, no dragging the image out of the page */
+.storefront img { -webkit-touch-callout: none; -webkit-user-drag: none; user-select: none; }
 
 .announcement {
   min-height: 34px; display: flex; justify-content: center; align-items: center; gap: 12px;
@@ -428,15 +430,68 @@ img { max-width: 100%; }
 
 /* ---------- Reels ---------- */
 .reels-section { padding: 70px 7%; }
-.reels-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; }
+@property --fade-start { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --fade-end { syntax: "<length>"; inherits: false; initial-value: 0px; }
+.reels-carousel { position: relative; }
+.reels-track {
+  --fade-start: 0px; --fade-end: 0px;
+  position: relative; display: flex; gap: 24px; justify-content: safe center; align-items: flex-start;
+  overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; overscroll-behavior-x: contain;
+  padding: 18px 4px 26px; scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--fade-start), #000 calc(100% - var(--fade-end)), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 var(--fade-start), #000 calc(100% - var(--fade-end)), transparent 100%);
+  transition: --fade-start .3s, --fade-end .3s;
+}
+.reels-track::-webkit-scrollbar { display: none; }
+/* Side room so the first and last reels can also settle in the centre */
+.reels-carousel.is-scrollable .reels-track {
+  justify-content: flex-start; padding-inline: calc(50% - min(170px, 43vw));
+}
+.reels-track.fade-start { --fade-start: 70px; }
+.reels-track.fade-end { --fade-end: 70px; }
 .reel-card {
-  width: 340px; max-width: 100%; overflow: hidden; border-radius: 10px;
+  flex: 0 0 340px; max-width: 86vw; overflow: hidden; border-radius: 12px; scroll-snap-align: center;
   background: #fff; box-shadow: 0 14px 34px #7a2e2e1f;
+  transition: transform .55s cubic-bezier(.22,.9,.32,1.15), opacity .45s ease, box-shadow .45s ease;
+  animation: reel-in .7s cubic-bezier(.22,.9,.32,1) backwards;
+}
+@keyframes reel-in {
+  from { opacity: 0; transform: translateX(40px) scale(.96); }
+  to { opacity: 1; transform: none; }
+}
+/* When there are more reels than fit, the centred one leads and the rest soften back */
+.reels-carousel.is-scrollable .reel-card { transform: scale(.92); opacity: .62; }
+.reels-carousel.is-scrollable .reel-card.is-active {
+  transform: scale(1); opacity: 1; box-shadow: 0 24px 48px #7a2e2e33;
 }
 .reel-card .instagram-media,
 .reel-card iframe {
   width: 100% !important; min-width: 0 !important; max-width: 100% !important;
-  margin: 0 !important; border: 0 !important; border-radius: 10px !important;
+  margin: 0 !important; border: 0 !important; border-radius: 12px !important;
+}
+
+.reels-arrow {
+  position: absolute; z-index: 3; top: 50%; translate: 0 -50%;
+  width: 52px; height: 52px; border-radius: 50%; display: none; align-items: center; justify-content: center;
+  border: 1px solid var(--gold); background: #fffaf4f2; color: var(--maroon);
+  box-shadow: 0 10px 24px #7a2e2e26; transition: transform .25s ease, background .25s ease, color .25s ease, opacity .25s ease;
+}
+.reels-carousel.is-scrollable .reels-arrow { display: flex; }
+.reels-arrow-prev { left: -8px; }
+.reels-arrow-next { right: -8px; }
+.reels-arrow:hover:not(:disabled) { background: var(--maroon); color: #fff8f1; transform: scale(1.08); }
+.reels-arrow:disabled { opacity: 0; pointer-events: none; }
+
+.reels-dots { display: flex; justify-content: center; gap: 8px; margin-top: 6px; }
+.reels-dots button {
+  width: 8px; height: 8px; padding: 0; border: 0; border-radius: 999px; background: #d9c6b4;
+  transition: width .35s cubic-bezier(.22,.9,.32,1), background .3s ease;
+}
+.reels-dots button.is-active { width: 28px; background: var(--maroon); }
+
+@media (prefers-reduced-motion: reduce) {
+  .reels-track { scroll-behavior: auto; }
+  .reel-card { animation: none; transition: none; }
 }
 
 /* ---------- Footer ---------- */
@@ -630,6 +685,10 @@ footer {
   footer { padding: 48px 6% 20px; }
   .footer-grid { grid-template-columns: 1fr; gap: 30px; }
   .footer-bottom { flex-direction: column; align-items: flex-start; }
+  .reels-section { padding: 56px 5%; }
+  .reels-arrow { width: 40px; height: 40px; }
+  .reels-arrow-prev { left: 0; }
+  .reels-arrow-next { right: 0; }
   .testimonials-section { padding: 56px 5% 40px; }
   .testimonial-grid { grid-template-columns: 1fr; gap: 14px; }
   .feedback-cta { padding: 10px 5% 56px; }

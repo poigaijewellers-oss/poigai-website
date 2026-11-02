@@ -20,11 +20,13 @@ import { useWishlist } from "../hooks/useWishlist";
 import { useTestimonials } from "../hooks/useTestimonials";
 import { useReels } from "../hooks/useReels";
 import { useNowTick } from "../hooks/useNowTick";
+import { useImageProtection } from "../hooks/useImageProtection";
 import { effectivePrice, enquireOnWhatsApp } from "../lib/productUtils";
 import type { Product } from "../lib/types";
 
 export default function StorefrontPage() {
   useNowTick(); // keeps offer countdowns fresh without a full page refresh
+  useImageProtection();
 
   const { products, loading, isLive } = useProducts();
   const { categories } = useCategories();
@@ -76,7 +78,7 @@ export default function StorefrontPage() {
   }
 
   return (
-    <main>
+    <main className="storefront">
       <AnnouncementBar text={settings.announcement_text} />
       <SiteHeader wishlistCount={count} onOpenWishlist={() => setWishlistOpen(true)} onEnquire={() => handleEnquire()} />
       <Hero settings={settings} />
