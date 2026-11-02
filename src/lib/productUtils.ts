@@ -1,6 +1,6 @@
 import type { Product } from "./types";
 
-export const PLACEHOLDER_IMAGE = "/poigai-logo.png";
+export const PLACEHOLDER_IMAGE = "/poigai-logo-mark-256.png";
 
 export function firstImage(product: Product): string {
   return product.images[0] ?? PLACEHOLDER_IMAGE;

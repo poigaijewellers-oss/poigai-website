@@ -14,7 +14,7 @@ export default function AdminLayout() {
   return (
     <div className="admin-shell">
       <header className="admin-topbar">
-        <img src="/poigai-logo-mark.png" alt="POIGAI" />
+        <img src="/poigai-logo-mark-256.png" alt="POIGAI" />
         <span>Admin panel</span>
         <button onClick={handleSignOut}>
           <LogOut size={15} /> Sign out

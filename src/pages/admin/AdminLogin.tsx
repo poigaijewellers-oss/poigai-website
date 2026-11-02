@@ -24,7 +24,7 @@ export default function AdminLogin() {
   return (
     <div className="admin-login">
       <form onSubmit={handleSubmit}>
-        <img src="/poigai-logo-mark.png" alt="POIGAI" />
+        <img src="/poigai-logo-mark-256.png" alt="POIGAI" />
         <h1>Admin sign in</h1>
         {!isConfigured && (
           <p className="admin-form-warning">

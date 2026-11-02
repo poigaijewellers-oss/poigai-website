@@ -91,7 +91,7 @@ export function ReelsSection({ reels, loading }: ReelsSectionProps) {
     <section className="reels-section" id="reels">
       <Reveal className="section-heading">
         <div>
-          <p className="eyebrow">ரீல்ஸ் பாருங்கள்</p>
+          <p className="eyebrow" lang="ta">ரீல்ஸ் பாருங்கள்</p>
           <h2>
             Watch our <em>reels.</em>
           </h2>

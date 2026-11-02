@@ -19,7 +19,19 @@ export function ProductGrid({
   loading,
 }: ProductGridProps) {
   if (loading) {
-    return <div className="product-grid-empty">Loading the collection…</div>;
+    return (
+      <div className="product-grid" aria-busy="true" aria-label="Loading the collection">
+        {[0, 1, 2].map((key) => (
+          <div className="product-card product-skeleton" key={key} aria-hidden="true">
+            <div className="skeleton-block skeleton-image" />
+            <div className="skeleton-lines">
+              <span className="skeleton-block" />
+              <span className="skeleton-block short" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   }
   if (products.length === 0) {
     return <div className="product-grid-empty">No pieces match your search yet. Try a different filter.</div>;

@@ -12,7 +12,7 @@ export function Testimonials({ testimonials, loading }: TestimonialsProps) {
     <section className="testimonials-section" id="feedback">
       <Reveal className="section-heading">
         <div>
-          <p className="eyebrow">வாடிக்கையாளர் கருத்துக்கள்</p>
+          <p className="eyebrow" lang="ta">வாடிக்கையாளர் கருத்துக்கள்</p>
           <h2>
             Loved by our <em>customers.</em>
           </h2>

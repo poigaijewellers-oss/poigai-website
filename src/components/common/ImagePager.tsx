@@ -16,6 +16,7 @@ type ImagePagerProps = {
 export function ImagePager({ images, alt, index, onIndexChange, onImageClick, showDots = true, eager }: ImagePagerProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [current, setCurrent] = useState(0);
+  const [loaded, setLoaded] = useState<Set<number>>(() => new Set());
   const onIndexChangeRef = useRef(onIndexChange);
   onIndexChangeRef.current = onIndexChange;
 
@@ -68,9 +69,11 @@ export function ImagePager({ images, alt, index, onIndexChange, onImageClick, sh
               src={src}
               alt={i === 0 ? alt : `${alt}, photo ${i + 1}`}
               loading={eager || i === 0 ? "eager" : "lazy"}
-              className={isCutoutImage(src) ? "is-cutout" : ""}
+              className={`${isCutoutImage(src) ? "is-cutout" : ""} ${loaded.has(i) ? "is-loaded" : ""}`}
               draggable={false}
               onClick={onImageClick}
+              onLoad={() => setLoaded((current) => new Set(current).add(i))}
+              onError={() => setLoaded((current) => new Set(current).add(i))}
             />
           </div>
         ))}

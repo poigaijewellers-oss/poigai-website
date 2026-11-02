@@ -22,7 +22,7 @@ export function SiteFooter({ settings, onEnquire }: SiteFooterProps) {
         <div className="footer-glow" aria-hidden="true" />
         <div className="footer-grid">
           <div className="footer-brand">
-            <img src="/poigai-logo-mark.png" alt="POIGAI" />
+            <img src="/poigai-logo-mark-256.png" alt="POIGAI" />
             <p>Everyday jewellery, chosen with love.</p>
             <span className="footer-tamil">அழகு மலரும் இடம்.</span>
           </div>

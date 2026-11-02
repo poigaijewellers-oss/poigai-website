@@ -5,7 +5,7 @@ export function BrandStory() {
     <section className="brand-story" id="story">
       <Reveal>
         <div className="story-mark">
-          <img src="/poigai-logo-mark.png" alt="" />
+          <img src="/poigai-logo-mark-256.png" alt="" />
         </div>
         <p className="eyebrow">A NOTE FROM POIGAI</p>
         <h2>

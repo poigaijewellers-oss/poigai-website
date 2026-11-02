@@ -60,7 +60,7 @@ export function FeedbackForm() {
   return (
     <Reveal>
       <form className="feedback-form" onSubmit={handleSubmit}>
-        <p className="eyebrow">உங்கள் கருத்தைப் பகிருங்கள்</p>
+        <p className="eyebrow" lang="ta">உங்கள் கருத்தைப் பகிருங்கள்</p>
         <h3>Share your feedback</h3>
         <div className="feedback-stars" role="radiogroup" aria-label="Rating">
           {Array.from({ length: 5 }).map((_, index) => {

@@ -38,7 +38,7 @@ export function SiteHeader({ wishlistCount, onOpenWishlist, onEnquire }: SiteHea
       </nav>
 
       <Link className="brand" to="/" aria-label="POIGAI home — அழகு மலரும் இடம்">
-        <img src="/poigai-logo-mark.png" alt="" />
+        <img src="/poigai-logo-mark-256.png" alt="" />
         <span className="brand-text">
           <strong>POIGAI</strong>
           <em>அழகு மலரும் இடம்.</em>
