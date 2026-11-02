@@ -32,6 +32,14 @@ export function effectivePrice(product: Product): number {
   return hasOffer(product) ? (product.offer_price as number) : product.price;
 }
 
+const NEW_ARRIVAL_DAYS = 30;
+
+// "New" is simply how recently the piece was added in the admin panel.
+export function isNewArrival(product: Product, now: number = Date.now()): boolean {
+  const added = new Date(product.created_at).getTime();
+  return Number.isFinite(added) && now - added <= NEW_ARRIVAL_DAYS * 24 * 60 * 60 * 1000;
+}
+
 export function hasOffer(product: Product): boolean {
   if (product.offer_price == null || product.offer_price >= product.price) return false;
   if (product.offer_ends_at && new Date(product.offer_ends_at).getTime() <= Date.now()) return false;

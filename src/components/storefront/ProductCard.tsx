@@ -4,6 +4,7 @@ import {
   effectivePrice,
   firstImage,
   hasOffer,
+  isNewArrival,
   offerCountdownLabel,
   pastelBackground,
   stockStatus,
@@ -31,6 +32,7 @@ export function ProductCard({ product, isWishlisted, onToggleWishlist, onQuickVi
         <div className="product-image" style={{ background: pastelBackground(product.id) }}>
           <div className="product-badges">
             {product.label && <span className="badge badge-label">{product.label}</span>}
+            {!product.label && isNewArrival(product) && <span className="badge badge-new">New</span>}
             {product.is_combo && <span className="badge badge-combo">Combo</span>}
             {offer && <span className="badge badge-offer">{countdown ?? "Offer"}</span>}
           </div>

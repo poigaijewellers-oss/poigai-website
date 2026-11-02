@@ -9,6 +9,8 @@ import { KolamDivider } from "../components/common/KolamDivider";
 import { Reveal } from "../components/common/Reveal";
 import { Hero } from "../components/storefront/Hero";
 import { BrandStory } from "../components/storefront/BrandStory";
+import { BrandStatement } from "../components/storefront/BrandStatement";
+import { ProductShelves } from "../components/storefront/ProductShelves";
 import { ProductToolbar, type SortOption } from "../components/storefront/ProductToolbar";
 import { ProductGrid } from "../components/storefront/ProductGrid";
 import { ProductQuickView } from "../components/storefront/ProductQuickView";
@@ -131,6 +133,18 @@ export default function StorefrontPage() {
         <b>✦</b>
         <span>CHOSEN FOR YOU</span>
       </div>
+
+      {!loading && (
+        <ProductShelves
+          products={products}
+          wishlistIds={wishlist}
+          onToggleWishlist={toggle}
+          onQuickView={openProduct}
+          onEnquire={handleEnquire}
+        />
+      )}
+
+      <BrandStatement />
 
       <section className="shop-section" id="shop">
         <Reveal className="section-heading">

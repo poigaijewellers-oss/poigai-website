@@ -263,7 +263,7 @@ export function ProductForm({ product, categories, onClose, onSaved }: ProductFo
         <div className="admin-form-row admin-form-toggles">
           <label className="admin-checkbox">
             <input type="checkbox" checked={isFeatured} onChange={(event) => setIsFeatured(event.target.checked)} />
-            Featured
+            Featured (shows in Bestsellers)
           </label>
           <label className="admin-checkbox">
             <input type="checkbox" checked={isActive} onChange={(event) => setIsActive(event.target.checked)} />
