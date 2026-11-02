@@ -6,6 +6,28 @@ export function firstImage(product: Product): string {
   return product.images[0] ?? PLACEHOLDER_IMAGE;
 }
 
+// Product photos with the background removed are stored as "cutout-<id>.webp".
+export function isCutoutImage(url: string): boolean {
+  return /\/cutout-[^/]+$/.test(url);
+}
+
+const PASTELS: [string, string][] = [
+  ["#fbe7e6", "#f3d0d2"],
+  ["#fdeedd", "#f5d8bc"],
+  ["#f8f0dc", "#ecdcb6"],
+  ["#f0e8f6", "#ddd0ec"],
+  ["#e8f2ea", "#d0e5d7"],
+  ["#e8f0f7", "#d2e1ee"],
+];
+
+// Each product gets its own soft pastel backdrop, stable across visits.
+export function pastelBackground(id: string): string {
+  let hash = 0;
+  for (const char of id) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
+  const [from, to] = PASTELS[hash % PASTELS.length];
+  return `linear-gradient(160deg, ${from} 0%, ${to} 100%)`;
+}
+
 export function effectivePrice(product: Product): number {
   return hasOffer(product) ? (product.offer_price as number) : product.price;
 }

@@ -45,11 +45,11 @@ export async function deleteProduct(id: string) {
   if (error) throw error;
 }
 
-export async function uploadProductImage(file: File): Promise<string> {
+export async function uploadProductImage(file: File, options: { cutout?: boolean } = {}): Promise<string> {
   const client = requireClient();
   const compressed = await compressImage(file);
   const extension = file.name.split(".").pop() ?? "jpg";
-  const path = `${crypto.randomUUID()}.${extension}`;
+  const path = `${options.cutout ? "cutout-" : ""}${crypto.randomUUID()}.${extension}`;
   const { error } = await client.storage.from("product-images").upload(path, compressed, {
     cacheControl: "3600",
     upsert: false,

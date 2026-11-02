@@ -1,6 +1,14 @@
 import { Heart, MessageCircle, Search } from "lucide-react";
 import type { Product } from "../../lib/types";
-import { effectivePrice, firstImage, hasOffer, offerCountdownLabel, stockStatus } from "../../lib/productUtils";
+import {
+  effectivePrice,
+  firstImage,
+  hasOffer,
+  isCutoutImage,
+  offerCountdownLabel,
+  pastelBackground,
+  stockStatus,
+} from "../../lib/productUtils";
 
 type ProductCardProps = {
   product: Product;
@@ -14,31 +22,49 @@ export function ProductCard({ product, isWishlisted, onToggleWishlist, onQuickVi
   const stock = stockStatus(product.stock);
   const offer = hasOffer(product);
   const countdown = offer ? offerCountdownLabel(product.offer_ends_at) : null;
+  const wishlistLabel = isWishlisted ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`;
+  const image = firstImage(product);
 
   return (
     <article className="product-card">
-      <div className="product-image">
-        <div className="product-badges">
-          {product.label && <span className="badge badge-label">{product.label}</span>}
-          {product.is_combo && <span className="badge badge-combo">Combo</span>}
-          {offer && <span className="badge badge-offer">{countdown ?? "Offer"}</span>}
-        </div>
-        <button
-          type="button"
-          className={`wishlist-dot ${isWishlisted ? "is-active" : ""}`}
-          aria-label={isWishlisted ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`}
-          aria-pressed={isWishlisted}
-          onClick={() => onToggleWishlist(product.id)}
-        >
-          <Heart size={14} />
-        </button>
-        <img src={firstImage(product)} alt={`${product.name} jewellery`} loading="lazy" />
-        <div className="product-image-actions">
-          <button type="button" onClick={() => onQuickView(product)}>
-            <Search size={14} /> Quick view
+      <div className="product-media">
+        <div className="product-image" style={{ background: pastelBackground(product.id) }}>
+          <div className="product-badges">
+            {product.label && <span className="badge badge-label">{product.label}</span>}
+            {product.is_combo && <span className="badge badge-combo">Combo</span>}
+            {offer && <span className="badge badge-offer">{countdown ?? "Offer"}</span>}
+          </div>
+          <button
+            type="button"
+            className={`wishlist-dot ${isWishlisted ? "is-active" : ""}`}
+            aria-label={wishlistLabel}
+            aria-pressed={isWishlisted}
+            onClick={() => onToggleWishlist(product.id)}
+          >
+            <Heart size={14} />
           </button>
-          <button type="button" onClick={() => onEnquire(product)}>
-            <MessageCircle size={14} /> Enquire
+          <img
+            src={image}
+            alt={`${product.name} jewellery`}
+            loading="lazy"
+            className={isCutoutImage(image) ? "is-cutout" : ""}
+          />
+        </div>
+        <div className="product-actions">
+          <button type="button" onClick={() => onQuickView(product)} aria-label={`Quick view ${product.name}`}>
+            <Search size={14} /> <span>Quick view</span>
+          </button>
+          <button type="button" onClick={() => onEnquire(product)} aria-label={`Enquire about ${product.name}`}>
+            <MessageCircle size={14} /> <span>Enquire</span>
+          </button>
+          <button
+            type="button"
+            className={`product-actions-wish ${isWishlisted ? "is-active" : ""}`}
+            aria-label={wishlistLabel}
+            aria-pressed={isWishlisted}
+            onClick={() => onToggleWishlist(product.id)}
+          >
+            <Heart size={14} />
           </button>
         </div>
       </div>

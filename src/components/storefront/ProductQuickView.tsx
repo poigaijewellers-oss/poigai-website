@@ -1,7 +1,15 @@
 import { useEffect, useState } from "react";
 import { Heart, MessageCircle, X } from "lucide-react";
 import type { Product } from "../../lib/types";
-import { effectivePrice, firstImage, hasOffer, offerCountdownLabel, stockStatus } from "../../lib/productUtils";
+import {
+  effectivePrice,
+  firstImage,
+  hasOffer,
+  isCutoutImage,
+  offerCountdownLabel,
+  pastelBackground,
+  stockStatus,
+} from "../../lib/productUtils";
 import { useBodyScrollLock } from "../../hooks/useBodyScrollLock";
 
 type ProductQuickViewProps = {
@@ -34,8 +42,12 @@ export function ProductQuickView({ product, onClose, onEnquire, isWishlisted, on
         <button type="button" className="quick-view-close" aria-label="Close" onClick={onClose}>
           <X size={18} />
         </button>
-        <div className="quick-view-image">
-          <img src={activeImage} alt={`${product.name} jewellery`} />
+        <div className="quick-view-image" style={{ background: pastelBackground(product.id) }}>
+          <img
+            src={activeImage}
+            alt={`${product.name} jewellery`}
+            className={isCutoutImage(activeImage) ? "is-cutout" : ""}
+          />
           {gallery.length > 1 && (
             <div className="quick-view-thumbs">
               {gallery.map((image, index) => (
@@ -46,7 +58,7 @@ export function ProductQuickView({ product, onClose, onEnquire, isWishlisted, on
                   onClick={() => setActiveIndex(index)}
                   aria-label={`Show photo ${index + 1}`}
                 >
-                  <img src={image} alt="" />
+                  <img src={image} alt="" className={isCutoutImage(image) ? "is-cutout" : ""} />
                 </button>
               ))}
             </div>
