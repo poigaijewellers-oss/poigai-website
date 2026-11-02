@@ -28,5 +28,7 @@ export function useWishlist() {
     );
   }, []);
 
-  return { wishlist, toggle, count: wishlist.length };
+  const clear = useCallback(() => setWishlist([]), []);
+
+  return { wishlist, toggle, clear, count: wishlist.length };
 }

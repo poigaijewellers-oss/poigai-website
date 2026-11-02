@@ -1,4 +1,7 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { FloatingChat } from "../components/layout/FloatingChat";
+import { RecentlyViewed } from "../components/storefront/RecentlyViewed";
+import { useRecentlyViewed } from "../hooks/useRecentlyViewed";
 import { AnnouncementBar } from "../components/layout/AnnouncementBar";
 import { SiteHeader } from "../components/layout/SiteHeader";
 import { SiteFooter } from "../components/layout/SiteFooter";
@@ -21,7 +24,7 @@ import { useTestimonials } from "../hooks/useTestimonials";
 import { useReels } from "../hooks/useReels";
 import { useNowTick } from "../hooks/useNowTick";
 import { useImageProtection } from "../hooks/useImageProtection";
-import { effectivePrice, enquireOnWhatsApp } from "../lib/productUtils";
+import { effectivePrice, enquireAboutWishlist, enquireOnWhatsApp } from "../lib/productUtils";
 import type { Product } from "../lib/types";
 
 export default function StorefrontPage() {
@@ -31,15 +34,49 @@ export default function StorefrontPage() {
   const { products, loading, isLive } = useProducts();
   const { categories } = useCategories();
   const { settings } = useSiteSettings();
-  const { wishlist, toggle, count } = useWishlist();
+  const { wishlist, toggle, clear } = useWishlist();
   const { testimonials, loading: testimonialsLoading } = useTestimonials();
   const { reels, loading: reelsLoading } = useReels();
+  const { recent, remember } = useRecentlyViewed();
 
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | "all">("all");
   const [sort, setSort] = useState<SortOption>("featured");
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [wishlistOpen, setWishlistOpen] = useState(false);
+
+  // Only count favourites that are still in the shop (a piece may have been removed since).
+  const wishlistCount = products.filter((product) => wishlist.includes(product.id)).length;
+  const recentProducts = recent
+    .map((id) => products.find((product) => product.id === id))
+    .filter((product): product is Product => Boolean(product));
+
+  const openProduct = useCallback(
+    (product: Product) => {
+      setQuickViewProduct(product);
+      remember(product.id);
+      const url = new URL(window.location.href);
+      url.searchParams.set("p", product.id);
+      window.history.replaceState(null, "", url);
+    },
+    [remember],
+  );
+
+  const closeProduct = useCallback(() => {
+    setQuickViewProduct(null);
+    const url = new URL(window.location.href);
+    url.searchParams.delete("p");
+    window.history.replaceState(null, "", url);
+  }, []);
+
+  // A shared link (?p=<id>) opens that piece straight away.
+  useEffect(() => {
+    if (loading) return;
+    const sharedId = new URLSearchParams(window.location.search).get("p");
+    if (!sharedId) return;
+    const shared = products.find((product) => product.id === sharedId);
+    if (shared) openProduct(shared);
+  }, [loading]); // run once, as soon as products have loaded
 
   const visibleProducts = useMemo(() => {
     let list = products;
@@ -80,7 +117,11 @@ export default function StorefrontPage() {
   return (
     <main className="storefront">
       <AnnouncementBar text={settings.announcement_text} />
-      <SiteHeader wishlistCount={count} onOpenWishlist={() => setWishlistOpen(true)} onEnquire={() => handleEnquire()} />
+      <SiteHeader
+        wishlistCount={wishlistCount}
+        onOpenWishlist={() => setWishlistOpen(true)}
+        onEnquire={() => handleEnquire()}
+      />
       <Hero settings={settings} />
 
       <div className="values-strip" aria-label="POIGAI values">
@@ -117,10 +158,12 @@ export default function StorefrontPage() {
           products={visibleProducts}
           wishlistIds={wishlist}
           onToggleWishlist={toggle}
-          onQuickView={setQuickViewProduct}
+          onQuickView={openProduct}
           onEnquire={handleEnquire}
           loading={loading}
         />
+
+        <RecentlyViewed products={recentProducts} onOpen={openProduct} />
 
         {!isLive && (
           <p className="preview-note">
@@ -146,7 +189,7 @@ export default function StorefrontPage() {
 
       <ProductQuickView
         product={quickViewProduct}
-        onClose={() => setQuickViewProduct(null)}
+        onClose={closeProduct}
         onEnquire={(product) => handleEnquire(product)}
         isWishlisted={quickViewProduct ? wishlist.includes(quickViewProduct.id) : false}
         onToggleWishlist={toggle}
@@ -158,8 +201,16 @@ export default function StorefrontPage() {
         products={products}
         wishlistIds={wishlist}
         onRemove={toggle}
+        onClear={clear}
         onEnquire={(product) => handleEnquire(product)}
+        onEnquireAll={(items) => enquireAboutWishlist(settings.whatsapp_number, items)}
+        onOpenProduct={(product) => {
+          setWishlistOpen(false);
+          openProduct(product);
+        }}
       />
+
+      <FloatingChat onClick={() => handleEnquire()} />
     </main>
   );
 }

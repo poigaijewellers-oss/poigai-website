@@ -4,11 +4,11 @@ import {
   effectivePrice,
   firstImage,
   hasOffer,
-  isCutoutImage,
   offerCountdownLabel,
   pastelBackground,
   stockStatus,
 } from "../../lib/productUtils";
+import { ImagePager } from "../common/ImagePager";
 
 type ProductCardProps = {
   product: Product;
@@ -23,7 +23,7 @@ export function ProductCard({ product, isWishlisted, onToggleWishlist, onQuickVi
   const offer = hasOffer(product);
   const countdown = offer ? offerCountdownLabel(product.offer_ends_at) : null;
   const wishlistLabel = isWishlisted ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`;
-  const image = firstImage(product);
+  const gallery = product.images.length > 0 ? product.images : [firstImage(product)];
 
   return (
     <article className="product-card">
@@ -43,12 +43,7 @@ export function ProductCard({ product, isWishlisted, onToggleWishlist, onQuickVi
           >
             <Heart size={14} />
           </button>
-          <img
-            src={image}
-            alt={`${product.name} jewellery`}
-            loading="lazy"
-            className={isCutoutImage(image) ? "is-cutout" : ""}
-          />
+          <ImagePager images={gallery} alt={`${product.name} jewellery`} onImageClick={() => onQuickView(product)} />
         </div>
         <div className="product-actions">
           <button type="button" onClick={() => onQuickView(product)} aria-label={`Quick view ${product.name}`}>

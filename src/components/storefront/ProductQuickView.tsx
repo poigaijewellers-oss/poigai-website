@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Heart, MessageCircle, X } from "lucide-react";
+import { Heart, MessageCircle, Share2, X } from "lucide-react";
 import type { Product } from "../../lib/types";
 import {
   effectivePrice,
@@ -8,9 +8,11 @@ import {
   isCutoutImage,
   offerCountdownLabel,
   pastelBackground,
+  productShareUrl,
   stockStatus,
 } from "../../lib/productUtils";
 import { useBodyScrollLock } from "../../hooks/useBodyScrollLock";
+import { ImagePager } from "../common/ImagePager";
 
 type ProductQuickViewProps = {
   product: Product | null;
@@ -23,17 +25,43 @@ type ProductQuickViewProps = {
 export function ProductQuickView({ product, onClose, onEnquire, isWishlisted, onToggleWishlist }: ProductQuickViewProps) {
   useBodyScrollLock(Boolean(product));
   const [activeIndex, setActiveIndex] = useState(0);
+  const [shareNote, setShareNote] = useState<string | null>(null);
 
   useEffect(() => {
     setActiveIndex(0);
+    setShareNote(null);
   }, [product?.id]);
+
+  useEffect(() => {
+    if (!product) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [product, onClose]);
 
   if (!product) return null;
   const stock = stockStatus(product.stock);
   const offer = hasOffer(product);
   const countdown = offer ? offerCountdownLabel(product.offer_ends_at) : null;
   const gallery = product.images.length > 0 ? product.images : [firstImage(product)];
-  const activeImage = gallery[activeIndex] ?? gallery[0];
+
+  async function share(current: Product) {
+    const url = productShareUrl(current);
+    const data = { title: `${current.name} · POIGAI`, text: `Have a look at ${current.name} from POIGAI`, url };
+    try {
+      if (navigator.share) {
+        await navigator.share(data);
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      setShareNote("Link copied");
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+      setShareNote(url);
+    }
+  }
 
   return (
     <div className="quick-view" role="dialog" aria-modal="true" aria-label={`${product.name} quick view`}>
@@ -43,10 +71,13 @@ export function ProductQuickView({ product, onClose, onEnquire, isWishlisted, on
           <X size={18} />
         </button>
         <div className="quick-view-image" style={{ background: pastelBackground(product.id) }}>
-          <img
-            src={activeImage}
+          <ImagePager
+            images={gallery}
             alt={`${product.name} jewellery`}
-            className={isCutoutImage(activeImage) ? "is-cutout" : ""}
+            index={activeIndex}
+            onIndexChange={setActiveIndex}
+            showDots={false}
+            eager
           />
           {gallery.length > 1 && (
             <div className="quick-view-thumbs">
@@ -101,7 +132,15 @@ export function ProductQuickView({ product, onClose, onEnquire, isWishlisted, on
             >
               <Heart size={16} /> {isWishlisted ? "Saved" : "Save"}
             </button>
+            <button type="button" className="wishlist-toggle" onClick={() => share(product)}>
+              <Share2 size={16} /> Share
+            </button>
           </div>
+          {shareNote && (
+            <p className="quick-view-share-note" aria-live="polite">
+              {shareNote}
+            </p>
+          )}
         </div>
       </div>
     </div>

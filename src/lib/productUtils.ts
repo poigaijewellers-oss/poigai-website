@@ -80,6 +80,21 @@ export function buildEnquiryMessage(product?: Product): string {
   return `Vanakkam POIGAI! I'm interested in ${product.name}${comboNote} (₹${price}).${stockNote} Please share the availability and details.`;
 }
 
+export function enquireAboutWishlist(whatsappNumber: string, products: Product[]) {
+  const lines = products.map((product, index) => `${index + 1}. ${product.name} (₹${effectivePrice(product)})`);
+  const message = `Vanakkam POIGAI! I'd like to know more about these pieces from my wishlist:\n${lines.join("\n")}\nPlease share availability and details.`;
+  window.open(
+    `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,
+    "_blank",
+    "noopener,noreferrer",
+  );
+}
+
+// A link that opens the shop with this piece's quick view already showing.
+export function productShareUrl(product: Product): string {
+  return `${window.location.origin}/?p=${encodeURIComponent(product.id)}`;
+}
+
 export function enquireOnWhatsApp(whatsappNumber: string, product?: Product) {
   const message = buildEnquiryMessage(product);
   window.open(

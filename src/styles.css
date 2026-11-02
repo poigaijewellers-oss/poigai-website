@@ -317,12 +317,28 @@ img { max-width: 100%; }
 .wishlist-panel h3 { margin: 0; display: flex; align-items: center; gap: 8px; font: 20px 'Italiana', serif; color: var(--maroon); }
 .wishlist-panel header button { background: none; border: 0; color: var(--maroon); }
 .wishlist-empty { padding: 40px 20px; text-align: center; color: #9b8980; font-size: 12px; }
-.wishlist-items { list-style: none; margin: 0; padding: 10px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
+.wishlist-panel h3 small { font: 500 12px var(--body, 'DM Sans', sans-serif); color: #9b8980; }
+.wishlist-items { list-style: none; margin: 0; padding: 10px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1; }
 .wishlist-items li { display: flex; align-items: center; gap: 12px; padding: 10px; background: #fff; }
-.wishlist-items img { width: 56px; height: 56px; object-fit: cover; flex-shrink: 0; }
-.wishlist-items li > div:nth-child(2) { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-.wishlist-items li strong { font-size: 12px; color: var(--ink); }
-.wishlist-items li span { font-size: 11px; color: var(--maroon); }
+.wishlist-item-open {
+  flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; padding: 0; border: 0; background: none; text-align: left;
+}
+.wishlist-thumb { width: 56px; height: 56px; flex-shrink: 0; overflow: hidden; }
+.wishlist-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.wishlist-thumb img.is-cutout { object-fit: contain; padding: 4px; }
+.wishlist-item-text { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.wishlist-item-text strong { font-size: 12px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wishlist-item-text span { font-size: 11px; color: var(--maroon); }
+.wishlist-footer {
+  display: grid; gap: 10px; padding: 16px 20px calc(18px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid #eadfd5;
+}
+.wishlist-send { justify-content: center; margin-top: 0; }
+.wishlist-clear {
+  justify-self: center; padding: 6px 10px; border: 0; background: none; color: #9b8980; font-size: 11px;
+  letter-spacing: .06em; text-transform: uppercase; text-decoration: underline; text-underline-offset: 3px;
+}
+.wishlist-clear:hover { color: var(--maroon); }
+.wishlist-note { margin: 0; text-align: center; color: #a08a80; font-size: 11px; }
 .wishlist-item-actions { display: flex; gap: 6px; }
 .wishlist-item-actions button {
   width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
@@ -427,6 +443,85 @@ img { max-width: 100%; }
   position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; display: flex; align-items: center;
   justify-content: center; border-radius: 50%; background: var(--maroon); color: #fff; border: 0;
 }
+
+/* ---------- Image pager (product cards + quick view) ---------- */
+.pager { position: absolute; inset: 0; }
+.pager-track {
+  display: flex; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth;
+  overscroll-behavior-x: contain; scrollbar-width: none;
+}
+.pager-track::-webkit-scrollbar { display: none; }
+.pager-slide { flex: 0 0 100%; height: 100%; overflow: hidden; scroll-snap-align: start; scroll-snap-stop: always; }
+.pager-slide img { cursor: pointer; }
+.pager-arrow {
+  position: absolute; z-index: 2; top: 50%; translate: 0 -50%; width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; border: 0; background: #fffaf4eb; color: var(--maroon);
+  box-shadow: 0 4px 12px #7a2e2e26; opacity: 0; transition: opacity .25s ease, transform .2s ease, background .2s ease;
+}
+.pager-prev { left: 10px; }
+.pager-next { right: 10px; }
+.product-card:hover .pager-arrow,
+.quick-view-image .pager-arrow { opacity: 1; }
+.pager-arrow:hover { background: var(--maroon); color: #fff8f1; transform: scale(1.08); }
+.pager-arrow:disabled { opacity: 0 !important; pointer-events: none; }
+.quick-view-image .pager-arrow { width: 40px; height: 40px; }
+.pager-dots {
+  position: absolute; z-index: 2; left: 50%; bottom: 10px; translate: -50% 0; display: flex; gap: 5px;
+  padding: 5px 8px; border-radius: 999px; background: #3a262333; backdrop-filter: blur(4px); transition: bottom .3s ease;
+}
+.pager-dots span { width: 6px; height: 6px; border-radius: 999px; background: #ffffffa6; transition: width .3s ease, background .3s ease; }
+.pager-dots span.is-active { width: 16px; background: #fff; }
+@media (hover: hover) and (min-width: 761px) {
+  .product-card:hover .pager-dots { bottom: 66px; }
+}
+@media (hover: none), (max-width: 760px) {
+  .pager-arrow { display: none; }
+}
+
+/* ---------- Recently viewed ---------- */
+.recently-viewed { margin-top: 48px; display: grid; gap: 14px; }
+.recently-viewed-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.recently-viewed-head span { color: #9b8980; font: 15px 'Italiana', serif; }
+.recently-viewed-row {
+  display: flex; gap: 14px; overflow-x: auto; padding-bottom: 6px; scroll-snap-type: x proximity; scrollbar-width: thin;
+}
+.recent-item {
+  flex: 0 0 132px; display: grid; gap: 6px; padding: 0; border: 0; background: none; text-align: left;
+  scroll-snap-align: start; transition: transform .25s ease;
+}
+.recent-item:hover { transform: translateY(-3px); }
+.recent-thumb { display: block; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 4px; }
+.recent-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.recent-thumb img.is-cutout { object-fit: contain; padding: 8%; }
+.recent-name { font: 15px/1.2 'Italiana', serif; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.recent-price { font-size: 11px; font-weight: 600; color: var(--maroon); }
+
+/* ---------- Floating WhatsApp chat ---------- */
+.floating-chat {
+  position: fixed; z-index: 150;
+  right: calc(20px + env(safe-area-inset-right, 0px)); bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  height: 54px; min-width: 54px; padding: 0 16px; border: 0; border-radius: 999px;
+  display: flex; align-items: center; gap: 10px; background: var(--maroon); color: #fff8f1;
+  box-shadow: 0 12px 28px #7a2e2e55; animation: chat-in .6s .8s cubic-bezier(.22,.9,.32,1.2) backwards;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.floating-chat span { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.floating-chat:hover { transform: translateY(-3px); box-shadow: 0 16px 34px #7a2e2e66; }
+.floating-chat::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; border: 2px solid var(--maroon);
+  animation: chat-pulse 2.8s ease-out 2s infinite; pointer-events: none;
+}
+@keyframes chat-in { from { opacity: 0; transform: translateY(20px) scale(.8); } to { opacity: 1; transform: none; } }
+@keyframes chat-pulse { 0% { opacity: .6; transform: scale(1); } 70%, 100% { opacity: 0; transform: scale(1.35); } }
+@media (max-width: 760px) {
+  .floating-chat { padding: 0; width: 54px; justify-content: center; right: calc(16px + env(safe-area-inset-right, 0px)); }
+  .floating-chat span { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .floating-chat, .floating-chat::before { animation: none; }
+}
+
+.quick-view-share-note { margin: 0; color: #9b8980; font-size: 12px; overflow-wrap: anywhere; }
 
 /* ---------- Reels ---------- */
 .reels-section { padding: 70px 7%; }
