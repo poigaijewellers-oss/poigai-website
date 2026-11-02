@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { ArrowRight } from "lucide-react";
 import type { SiteSettings } from "../../lib/types";
 
@@ -34,7 +35,16 @@ export function Hero({ settings }: HeroProps) {
         </a>
         <p className="tamil-line">அழகு மலரும் இடம்.</p>
       </div>
-      <div className="hero-visual" role="img" aria-label="Elegant gold-tone jewellery on a warm neutral background">
+      <div
+        className="hero-visual"
+        role="img"
+        aria-label={settings.hero_image_url ? "POIGAI jewellery" : "Elegant gold-tone jewellery on a warm neutral background"}
+        style={
+          settings.hero_image_url
+            ? ({ "--hero-image": `url(${JSON.stringify(settings.hero_image_url)})` } as CSSProperties)
+            : undefined
+        }
+      >
         <div className="hero-note">
           <span>THE POIGAI PROMISE</span>
           <strong>

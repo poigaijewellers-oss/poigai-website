@@ -47,6 +47,8 @@ export interface SiteSettings {
   whatsapp_number: string;
   hero_heading: string;
   hero_subheading: string;
+  // Missing until migration_005 has been run; empty keeps the default photo.
+  hero_image_url?: string | null;
   instagram_url: string;
   theme_primary: string;
   theme_accent: string;

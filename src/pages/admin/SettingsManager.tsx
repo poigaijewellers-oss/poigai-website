@@ -1,18 +1,36 @@
 import { useEffect, useState } from "react";
-import type { FormEvent } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import { useSiteSettings } from "../../hooks/useSiteSettings";
-import { updateSiteSettings } from "../../lib/adminApi";
+import { updateSiteSettings, uploadProductImage } from "../../lib/adminApi";
 
 export default function SettingsManager() {
   const { settings, loading, refresh } = useSiteSettings();
   const [form, setForm] = useState(settings);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setForm(settings);
   }, [settings]);
+
+  async function handleHeroUpload(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    setUploading(true);
+    setError(null);
+    try {
+      const url = await uploadProductImage(file);
+      setForm((current) => ({ ...current, hero_image_url: url }));
+      setSaved(false);
+    } catch (uploadError) {
+      setError(uploadError instanceof Error ? uploadError.message : "Couldn't upload the photo.");
+    } finally {
+      setUploading(false);
+    }
+  }
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -24,7 +42,12 @@ export default function SettingsManager() {
       await refresh();
       setSaved(true);
     } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : "Couldn't save settings.");
+      const message = submitError instanceof Error ? submitError.message : "Couldn't save settings.";
+      setError(
+        message.includes("hero_image_url")
+          ? "The hero photo needs a quick database update first: run supabase/migration_005_hero_image.sql in the Supabase SQL editor, then save again."
+          : message,
+      );
     } finally {
       setSaving(false);
     }
@@ -68,6 +91,25 @@ export default function SettingsManager() {
             onChange={(event) => setForm({ ...form, hero_subheading: event.target.value })}
           />
         </label>
+        <div className="admin-image-field">
+          <span>Hero photo (landscape, about 1600 × 1200 px, jewellery in the centre)</span>
+          <div className="admin-hero-preview">
+            {form.hero_image_url ? (
+              <img src={form.hero_image_url} alt="Current hero photo" />
+            ) : (
+              <em>Using the default photo</em>
+            )}
+          </div>
+          <div className="admin-hero-actions">
+            <input type="file" accept="image/*" onChange={handleHeroUpload} disabled={uploading} />
+            {form.hero_image_url && (
+              <button type="button" className="admin-text-button" onClick={() => setForm({ ...form, hero_image_url: null })}>
+                Use default photo
+              </button>
+            )}
+          </div>
+          {uploading && <span className="admin-upload-status">Uploading…</span>}
+        </div>
         <label>
           Instagram URL
           <input
