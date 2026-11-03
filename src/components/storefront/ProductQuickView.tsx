@@ -9,6 +9,7 @@ import {
   offerCountdownLabel,
   pastelBackground,
   productShareUrl,
+  relatedProducts,
   stockStatus,
 } from "../../lib/productUtils";
 import { useBodyScrollLock } from "../../hooks/useBodyScrollLock";
@@ -21,9 +22,19 @@ type ProductQuickViewProps = {
   onEnquire: (product: Product) => void;
   isWishlisted: boolean;
   onToggleWishlist: (id: string) => void;
+  products: Product[];
+  onOpenProduct: (product: Product) => void;
 };
 
-export function ProductQuickView({ product, onClose, onEnquire, isWishlisted, onToggleWishlist }: ProductQuickViewProps) {
+export function ProductQuickView({
+  product,
+  onClose,
+  onEnquire,
+  isWishlisted,
+  onToggleWishlist,
+  products,
+  onOpenProduct,
+}: ProductQuickViewProps) {
   useBodyScrollLock(Boolean(product));
   const [activeIndex, setActiveIndex] = useState(0);
   const [shareNote, setShareNote] = useState<string | null>(null);
@@ -31,12 +42,14 @@ export function ProductQuickView({ product, onClose, onEnquire, isWishlisted, on
   const [descriptionOpen, setDescriptionOpen] = useState(false);
   const [descriptionLong, setDescriptionLong] = useState(false);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setActiveIndex(0);
     setShareNote(null);
     setZoomOpen(false);
     setDescriptionOpen(false);
+    scrollRef.current?.scrollTo({ top: 0 }); // opening a suggested piece starts at its photo
   }, [product?.id]);
 
   // Only offer "Read more" when the description really runs past two lines.
@@ -64,6 +77,7 @@ export function ProductQuickView({ product, onClose, onEnquire, isWishlisted, on
   const offer = hasOffer(product);
   const countdown = offer ? offerCountdownLabel(product.offer_ends_at) : null;
   const gallery = product.images.length > 0 ? product.images : [firstImage(product)];
+  const related = relatedProducts(product, products);
 
   async function share(current: Product) {
     const url = productShareUrl(current);
@@ -88,7 +102,7 @@ export function ProductQuickView({ product, onClose, onEnquire, isWishlisted, on
         <button type="button" className="quick-view-close" aria-label="Close" onClick={onClose}>
           <X size={18} />
         </button>
-        <div className="quick-view-scroll">
+        <div className="quick-view-scroll" ref={scrollRef}>
           <div className="quick-view-image" style={{ background: pastelBackground(product.id) }}>
             <ImagePager
               images={gallery}
@@ -173,17 +187,37 @@ export function ProductQuickView({ product, onClose, onEnquire, isWishlisted, on
                 className={`wishlist-toggle ${isWishlisted ? "is-active" : ""}`}
                 onClick={() => onToggleWishlist(product.id)}
                 aria-pressed={isWishlisted}
+                aria-label={isWishlisted ? "Saved to wishlist" : "Save to wishlist"}
               >
-                <Heart size={16} /> {isWishlisted ? "Saved" : "Save"}
+                <Heart size={16} /> <span>{isWishlisted ? "Saved" : "Save"}</span>
               </button>
-              <button type="button" className="wishlist-toggle" onClick={() => share(product)}>
-                <Share2 size={16} /> Share
+              <button type="button" className="wishlist-toggle" onClick={() => share(product)} aria-label="Share">
+                <Share2 size={16} /> <span>Share</span>
               </button>
             </div>
             {shareNote && (
               <p className="quick-view-share-note" aria-live="polite">
                 {shareNote}
               </p>
+            )}
+            {related.length > 0 && (
+              <div className="quick-view-related">
+                <p className="eyebrow">You may also like</p>
+                <div className="recently-viewed-row">
+                  {related.map((item) => {
+                    const image = firstImage(item);
+                    return (
+                      <button type="button" key={item.id} className="recent-item" onClick={() => onOpenProduct(item)}>
+                        <span className="recent-thumb" style={{ background: pastelBackground(item.id) }}>
+                          <img src={image} alt="" className={isCutoutImage(image) ? "is-cutout" : ""} loading="lazy" />
+                        </span>
+                        <span className="recent-name">{item.name}</span>
+                        <span className="recent-price">₹{effectivePrice(item)}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             )}
           </div>
         </div>

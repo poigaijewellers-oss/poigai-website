@@ -32,6 +32,16 @@ export function effectivePrice(product: Product): number {
   return hasOffer(product) ? (product.offer_price as number) : product.price;
 }
 
+// Pieces to suggest alongside one product: same category first, then the rest (featured ahead).
+export function relatedProducts(product: Product, all: Product[], limit = 6): Product[] {
+  const others = all.filter((candidate) => candidate.id !== product.id);
+  const sameCategory = product.category_id ? others.filter((candidate) => candidate.category_id === product.category_id) : [];
+  const rest = others
+    .filter((candidate) => !sameCategory.includes(candidate))
+    .sort((a, b) => Number(b.is_featured) - Number(a.is_featured));
+  return [...sameCategory, ...rest].slice(0, limit);
+}
+
 const NEW_ARRIVAL_DAYS = 30;
 
 // "New" is simply how recently the piece was added in the admin panel.

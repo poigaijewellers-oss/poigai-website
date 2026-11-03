@@ -220,6 +220,8 @@ export default function StorefrontPage() {
         onEnquire={(product) => handleEnquire(product)}
         isWishlisted={quickViewProduct ? wishlist.includes(quickViewProduct.id) : false}
         onToggleWishlist={toggle}
+        products={products}
+        onOpenProduct={openProduct}
       />
 
       <WishlistDrawer

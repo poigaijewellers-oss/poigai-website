@@ -466,6 +466,23 @@ html { scrollbar-color: #c9b298 #f6e9dc; }
 }
 .wishlist-toggle.is-active { background: var(--maroon); color: #fff8f1; border-color: var(--maroon); }
 
+.quick-view-related { display: grid; gap: 12px; margin-top: 16px; padding-top: 20px; border-top: 1px solid #eadfd5; }
+.quick-view-related .recent-item { flex-basis: 112px; }
+
+/* Phones: the WhatsApp enquiry stays pinned to the bottom of the product view, one tap away */
+@media (max-width: 760px) {
+  .quick-view-share-note { order: 9; }
+  .quick-view-actions {
+    order: 10; position: sticky; bottom: 0; z-index: 2; flex-wrap: nowrap;
+    margin: 12px -20px -26px; padding: 12px 20px calc(12px + env(safe-area-inset-bottom, 0px));
+    background: #fbf7f2f2; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 -10px 24px #7a2e2e17;
+  }
+  .quick-view-actions .primary-link { flex: 1; justify-content: center; padding: 15px 14px; }
+  .quick-view-actions .wishlist-toggle { flex: 0 0 48px; justify-content: center; padding: 0; }
+  .quick-view-actions .wishlist-toggle span { display: none; }
+}
+
 /* ---------- Wishlist drawer ---------- */
 .wishlist-drawer { position: fixed; inset: 0; z-index: 190; visibility: hidden; pointer-events: none; }
 .wishlist-drawer.is-open { visibility: visible; pointer-events: auto; }
