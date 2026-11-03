@@ -150,10 +150,24 @@ html { scrollbar-color: #c9b298 #f6e9dc; }
 .primary-link:hover { background: #5f2225; transform: translateY(-2px); }
 .tamil-line { margin-top: 32px; color: var(--maroon); font: 13px 'Noto Serif Tamil', serif; }
 .hero-visual {
-  position: relative; min-height: 440px; background:
-    linear-gradient(0deg, rgba(50,28,22,.08), rgba(50,28,22,0)),
-    var(--hero-image, url('https://images.unsplash.com/photo-1617038220319-276d3cfab638?w=1400&q=90')) center/cover;
+  position: relative; min-height: 440px;
+  /* Soft placeholder while the photo loads */
+  background: linear-gradient(160deg, #f3e3d4 0%, #ecd6c3 55%, #e5ccb6 100%);
   border-radius: 48% 48% 2px 2px; box-shadow: 0 18px 45px #7a2e2e12;
+}
+.hero-photo { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; }
+.hero-photo::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(0deg, rgba(50,28,22,.08), rgba(50,28,22,0));
+}
+.hero-photo img {
+  width: 100%; height: 100%; display: block; object-fit: cover; opacity: 0; transform: scale(1.03);
+  transition: opacity .8s ease, transform 1.2s ease;
+}
+.hero-photo img.is-loaded { opacity: 1; transform: none; }
+.hero-note { z-index: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-photo img { transition: none; transform: none; }
 }
 .hero-note {
   position: absolute; bottom: 25px; left: -38px; width: 150px; height: 150px; padding: 17px;
@@ -383,7 +397,8 @@ html { scrollbar-color: #c9b298 #f6e9dc; }
   border-radius: 50%; color: var(--maroon); box-shadow: 0 4px 14px #2c1a1626;
 }
 .quick-view-image { position: relative; background: #efe5dc; min-height: 420px; }
-.quick-view-image img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: zoom-in; }
+/* The whole piece is shown (no cropping); the pastel backdrop fills any space around it */
+.quick-view-image img { width: 100%; height: 100%; object-fit: contain; display: block; cursor: zoom-in; }
 /* Opening a product should show its photo at once, not fade it in */
 .quick-view-image .pager-slide img { opacity: 1; transition: none; }
 .quick-view-zoom {
@@ -420,13 +435,15 @@ html { scrollbar-color: #c9b298 #f6e9dc; }
 .zoom-buttons button:hover, .zoom-arrow:hover { background: #ffffff2e; }
 .zoom-buttons button:disabled { opacity: .35; cursor: default; }
 .zoom-stage {
-  position: relative; flex: 1; min-height: 0; overflow: hidden; display: grid; place-items: center;
+  position: relative; flex: 1; min-height: 0; overflow: hidden;
   touch-action: none; cursor: zoom-in; user-select: none;
 }
 .zoom-stage.is-zoomed { cursor: grab; }
 .zoom-stage.is-zoomed:active { cursor: grabbing; }
+/* Pinned to the stage so the whole photo always fits on screen before zooming */
 .zoom-stage img {
-  max-width: min(100%, 1100px); max-height: 100%; object-fit: contain; display: block;
+  position: absolute; inset: 0; margin: auto; width: auto; height: auto;
+  max-width: min(100% - 24px, 1100px); max-height: calc(100% - 12px); object-fit: contain; display: block;
   transform-origin: center; will-change: transform; -webkit-user-drag: none; pointer-events: none;
 }
 .zoom-stage img.is-cutout { padding: 4%; border-radius: 6px; }

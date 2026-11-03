@@ -35,7 +35,7 @@ export default function StorefrontPage() {
 
   const { products, loading, isLive } = useProducts();
   const { categories } = useCategories();
-  const { settings } = useSiteSettings();
+  const { settings, loading: settingsLoading } = useSiteSettings();
   const { wishlist, toggle, clear } = useWishlist();
   const { testimonials, loading: testimonialsLoading } = useTestimonials();
   const { reels, loading: reelsLoading } = useReels();
@@ -127,7 +127,7 @@ export default function StorefrontPage() {
         onEnquire={() => handleEnquire()}
         hiddenSections={hiddenSections}
       />
-      <Hero settings={settings} />
+      <Hero settings={settings} settingsReady={!settingsLoading} />
 
       {show("values_strip") && (
         <div className="values-strip" aria-label="POIGAI values">
