@@ -214,14 +214,17 @@ html { scrollbar-color: #c9b298 #f6e9dc; }
     radial-gradient(circle at 88% 85%, #c9772f2e 0%, transparent 40%),
     linear-gradient(150deg, #5e2f2f 0%, var(--maroon) 55%, #4a2222 100%);
 }
+/* Sikku-style kolam border: two lines weaving around a row of pulli dots (different from the wave dividers) */
 .brand-statement::before, .brand-statement::after {
-  content: ""; position: absolute; left: 0; right: 0; height: 22px; opacity: .35; background-repeat: repeat-x;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='22' viewBox='0 0 48 22'%3E%3Cpath d='M0 11 Q12 1 24 11 T48 11' stroke='%23C9B298' stroke-width='1.3' fill='none'/%3E%3Ccircle cx='0' cy='11' r='2.4' fill='%23C9B298'/%3E%3Ccircle cx='24' cy='11' r='2.4' fill='%23C9B298'/%3E%3Ccircle cx='48' cy='11' r='2.4' fill='%23C9B298'/%3E%3C/svg%3E");
+  content: ""; position: absolute; left: 0; right: 0; height: 24px; opacity: .42; background-repeat: repeat-x;
+  background-position: center;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='24' viewBox='0 0 40 24'%3E%3Cg fill='none' stroke='%23C9B298' stroke-width='1.2' stroke-linecap='round'%3E%3Cpath d='M0 12 Q10 0 20 12 T40 12'/%3E%3Cpath d='M0 12 Q10 24 20 12 T40 12'/%3E%3C/g%3E%3Cg fill='%23C9B298'%3E%3Ccircle cx='10' cy='12' r='2'/%3E%3Ccircle cx='30' cy='12' r='2'/%3E%3Ccircle cx='20' cy='2.5' r='1'/%3E%3Ccircle cx='20' cy='21.5' r='1'/%3E%3Ccircle cx='0' cy='2.5' r='1'/%3E%3Ccircle cx='0' cy='21.5' r='1'/%3E%3Ccircle cx='40' cy='2.5' r='1'/%3E%3Ccircle cx='40' cy='21.5' r='1'/%3E%3C/g%3E%3C/svg%3E");
 }
-.brand-statement::before { top: 18px; }
-.brand-statement::after { bottom: 18px; }
+.brand-statement::before { top: 16px; }
+.brand-statement::after { bottom: 16px; }
 .brand-statement-inner { display: grid; justify-items: center; gap: 16px; }
-.brand-statement-ornament { color: var(--gold); font-size: 14px; animation: twinkle 3s ease-in-out infinite; }
+.brand-statement-ornament { display: block; width: 46px; height: 28px; color: var(--gold); animation: lotus-bloom 4s ease-in-out infinite; }
+@keyframes lotus-bloom { 0%, 100% { opacity: .75; transform: scale(.96); } 50% { opacity: 1; transform: scale(1.04); } }
 .brand-statement-tamil {
   margin: 0; display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 4px 18px;
   font: 500 clamp(26px, 3.6vw, 44px)/1.45 'Noto Serif Tamil', 'Nirmala UI', serif;
@@ -367,15 +370,76 @@ html { scrollbar-color: #c9b298 #f6e9dc; }
 .quick-view { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; }
 .quick-view-backdrop { position: absolute; inset: 0; background: #2c1a1680; }
 .quick-view-panel {
-  position: relative; z-index: 1; width: 100%; max-width: 860px; max-height: 90vh; overflow: auto;
-  background: #fbf7f2; display: grid; grid-template-columns: 1fr 1fr;
+  position: relative; z-index: 1; width: 100%; max-width: 900px; max-height: 90vh; overflow: hidden;
+  background: #fbf7f2; display: flex;
+}
+/* The panel scrolls inside, so the close button stays put while reading */
+.quick-view-scroll {
+  width: 100%; max-height: 90vh; overflow: auto; overscroll-behavior: contain;
+  display: grid; grid-template-columns: 1fr 1fr;
 }
 .quick-view-close {
-  position: absolute; top: 14px; right: 14px; z-index: 2; background: #fff; border: 0; padding: 9px;
-  border-radius: 50%; color: var(--maroon);
+  position: absolute; top: 14px; right: 14px; z-index: 3; background: #fff; border: 0; padding: 9px;
+  border-radius: 50%; color: var(--maroon); box-shadow: 0 4px 14px #2c1a1626;
 }
-.quick-view-image { position: relative; background: #efe5dc; min-height: 320px; }
-.quick-view-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.quick-view-image { position: relative; background: #efe5dc; min-height: 420px; }
+.quick-view-image img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: zoom-in; }
+/* Opening a product should show its photo at once, not fade it in */
+.quick-view-image .pager-slide img { opacity: 1; transition: none; }
+.quick-view-zoom {
+  position: absolute; z-index: 2; top: 14px; left: 14px; width: 36px; height: 36px; border-radius: 50%;
+  display: grid; place-items: center; border: 0; background: #fffaf4e6; color: var(--maroon);
+  box-shadow: 0 4px 12px #7a2e2e26;
+}
+.quick-view-description-wrap { display: grid; justify-items: start; gap: 4px; }
+.quick-view-description {
+  margin: 0; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+}
+.quick-view-description.is-open { display: block; -webkit-line-clamp: unset; line-clamp: none; overflow: visible; }
+.read-more {
+  padding: 2px 0; border: 0; background: none; color: var(--maroon); font-size: 12px; font-weight: 600;
+  letter-spacing: .06em; text-decoration: underline; text-underline-offset: 3px;
+}
+
+/* ---------- Zoomable photo viewer ---------- */
+.zoom-viewer {
+  position: fixed; inset: 0; z-index: 300; display: flex; flex-direction: column;
+  background: #1c1210f2; color: #f8eee5; animation: zoom-in-fade .25s ease;
+}
+@keyframes zoom-in-fade { from { opacity: 0; } to { opacity: 1; } }
+.zoom-toolbar {
+  position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between;
+  padding: calc(12px + env(safe-area-inset-top, 0px)) 14px 12px;
+}
+.zoom-counter { font-size: 12px; letter-spacing: .14em; color: #e3cfc0; }
+.zoom-buttons { display: flex; gap: 8px; margin-left: auto; }
+.zoom-buttons button, .zoom-arrow {
+  width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; border: 1px solid #ffffff2e;
+  background: #ffffff14; color: #fff8f1; transition: background .2s ease, opacity .2s ease;
+}
+.zoom-buttons button:hover, .zoom-arrow:hover { background: #ffffff2e; }
+.zoom-buttons button:disabled { opacity: .35; cursor: default; }
+.zoom-stage {
+  position: relative; flex: 1; min-height: 0; overflow: hidden; display: grid; place-items: center;
+  touch-action: none; cursor: zoom-in; user-select: none;
+}
+.zoom-stage.is-zoomed { cursor: grab; }
+.zoom-stage.is-zoomed:active { cursor: grabbing; }
+.zoom-stage img {
+  max-width: min(100%, 1100px); max-height: 100%; object-fit: contain; display: block;
+  transform-origin: center; will-change: transform; -webkit-user-drag: none; pointer-events: none;
+}
+.zoom-stage img.is-cutout { padding: 4%; border-radius: 6px; }
+.zoom-arrow { position: absolute; z-index: 2; top: 50%; translate: 0 -50%; }
+.zoom-prev { left: 14px; }
+.zoom-next { right: 14px; }
+.zoom-hint {
+  margin: 0; padding: 10px 16px calc(14px + env(safe-area-inset-bottom, 0px)); text-align: center;
+  font-size: 11px; letter-spacing: .1em; color: #cdb8aa;
+}
+@media (hover: none), (max-width: 760px) {
+  .zoom-arrow { display: none; }
+}
 .quick-view-thumbs {
   position: absolute; z-index: 2; left: 14px; right: 14px; bottom: 14px;
   display: flex; gap: 8px; overflow-x: auto;
@@ -391,7 +455,7 @@ html { scrollbar-color: #c9b298 #f6e9dc; }
 .quick-view-price { display: flex; align-items: baseline; gap: 10px; }
 .quick-view-price strong { font-size: 18px; color: var(--maroon); }
 .quick-view-price s { color: #a68f85; font-size: 12px; }
-.quick-view-description { color: #765f58; font-size: 14px; line-height: 1.8; }
+.quick-view-description { color: #765f58; font-size: 14px; line-height: 1.8; white-space: pre-line; }
 .quick-view-combo { margin: 0; padding: 10px 12px; background: #f6efe4; color: #6b5a3a; font-size: 11px; line-height: 1.7; }
 .quick-view-combo strong { color: var(--maroon); }
 .quick-view-actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
@@ -900,8 +964,9 @@ footer {
   .product-details h3 { font-size: 17px; }
   .product-badges { top: 8px; left: 8px; gap: 4px; }
   .badge { padding: 4px 7px; font-size: 8.5px; }
-  .quick-view-panel { grid-template-columns: 1fr; }
-  .quick-view-image { min-height: 220px; }
+  .quick-view { padding: 12px; }
+  .quick-view-scroll { display: block; }
+  .quick-view-image { min-height: 0; aspect-ratio: 1 / 1; }
   .quick-view-details { padding: 26px 20px; }
   .brand-story { padding: 65px 18px; }
   .brand-story h2 { font-size: 43px; }
