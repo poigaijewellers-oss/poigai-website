@@ -14,6 +14,9 @@ type ReelsSectionProps = {
   loading: boolean;
 };
 
+// Wider screens show several reels in a left-aligned row; phones keep one reel centred at a time.
+const alignToStart = () => window.matchMedia("(min-width: 761px)").matches;
+
 export function ReelsSection({ reels, loading }: ReelsSectionProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
@@ -42,11 +45,14 @@ export function ReelsSection({ reels, loading }: ReelsSectionProps) {
     const update = () => {
       frame = 0;
       const cards = Array.from(track.children) as HTMLElement[];
-      const middle = track.scrollLeft + track.clientWidth / 2;
+      const start = alignToStart();
+      const anchor = start
+        ? track.scrollLeft + (parseFloat(getComputedStyle(track).paddingLeft) || 0)
+        : track.scrollLeft + track.clientWidth / 2;
       let closest = 0;
       let closestDistance = Infinity;
       cards.forEach((card, index) => {
-        const distance = Math.abs(card.offsetLeft + card.offsetWidth / 2 - middle);
+        const distance = Math.abs((start ? card.offsetLeft : card.offsetLeft + card.offsetWidth / 2) - anchor);
         if (distance < closestDistance) {
           closestDistance = distance;
           closest = index;
@@ -82,7 +88,10 @@ export function ReelsSection({ reels, loading }: ReelsSectionProps) {
     const track = trackRef.current;
     const card = track?.children[index] as HTMLElement | undefined;
     if (!track || !card) return;
-    track.scrollTo({ left: card.offsetLeft - (track.clientWidth - card.offsetWidth) / 2, behavior: "smooth" });
+    const left = alignToStart()
+      ? card.offsetLeft - (parseFloat(getComputedStyle(track).paddingLeft) || 0)
+      : card.offsetLeft - (track.clientWidth - card.offsetWidth) / 2;
+    track.scrollTo({ left, behavior: "smooth" });
   }
 
   if (loading || reels.length === 0) return null;

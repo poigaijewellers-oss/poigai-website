@@ -194,7 +194,12 @@ html { scrollbar-color: #c9b298 #f6e9dc; }
 .section-aside { color: #987e74; font: 16px 'Italiana', serif; }
 
 /* ---------- New arrivals / Bestsellers shelf ---------- */
-.shelves-section { padding: 70px 0 56px 7%; background: linear-gradient(180deg, #fbf7f2 0%, #fdf8f3 100%); }
+.shelves-section {
+  padding: 70px 0 56px 7%;
+  background:
+    radial-gradient(circle at 92% 10%, #f6e0cf75 0%, transparent 40%),
+    linear-gradient(180deg, #fdf8f3 0%, #f9efe4 100%);
+}
 .shelves-head { display: grid; gap: 12px; margin-bottom: 26px; padding-right: 7%; }
 .shelves-tabs { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 30px; }
 .shelves-tabs button {
@@ -551,9 +556,16 @@ html { scrollbar-color: #c9b298 #f6e9dc; }
     radial-gradient(circle at 92% 92%, #eccab590 0%, transparent 52%),
     linear-gradient(155deg, #faf1e6 0%, #f5e2cd 55%, #efd4ba 100%);
 }
+/* A faint lotus watermark behind the note (the pond theme of பொய்கை), fully inside the section */
 .brand-story::before {
-  content: "\275D"; position: absolute; top: -56px; left: 50%; transform: translateX(-50%);
-  font: 280px/1 'Italiana', serif; color: #7a2e2e12; pointer-events: none; z-index: 0;
+  content: ""; position: absolute; left: 50%; top: 50%; width: min(620px, 92vw); aspect-ratio: 46 / 28;
+  transform: translate(-50%, -46%); pointer-events: none; z-index: 0; opacity: .07;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 28'%3E%3Cg fill='none' stroke='%237A2E2E' stroke-width='.6' stroke-linejoin='round'%3E%3Cpath d='M23 3 C27 9 27 17 23 23 C19 17 19 9 23 3 Z'/%3E%3Cpath d='M23 23 C17 21 12 15 12 8 C17 10 21 15 23 23 Z'/%3E%3Cpath d='M23 23 C29 21 34 15 34 8 C29 10 25 15 23 23 Z'/%3E%3Cpath d='M23 23 C15 24 7 21 3 15 C10 14 17 17 23 23 Z'/%3E%3Cpath d='M23 23 C31 24 39 21 43 15 C36 14 29 17 23 23 Z'/%3E%3Cpath d='M9 26 H37' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
+}
+/* Soft light sweep across the section */
+.brand-story::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  background: linear-gradient(115deg, transparent 30%, #fffaf466 48%, transparent 66%);
 }
 .brand-story > .reveal { position: relative; z-index: 1; }
 .story-mark {
@@ -575,7 +587,7 @@ html { scrollbar-color: #c9b298 #f6e9dc; }
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .brand-story p:not(.eyebrow) { max-width: 520px; margin: 0 auto; color: #6b534a; font-size: 15px; line-height: 1.9; }
-.story-tamil { display: block; margin-top: 25px; color: var(--maroon); font: 12px 'Noto Serif Tamil', serif; }
+.story-tamil { display: block; margin-top: 28px; color: var(--maroon); font: 500 16px/1.5 'Noto Serif Tamil', 'Nirmala UI', serif; }
 .story-tamil::before, .story-tamil::after {
   content: "✦"; display: inline-block; margin: 0 10px; color: var(--gold); font-size: 9px; vertical-align: middle;
 }
@@ -596,10 +608,15 @@ html { scrollbar-color: #c9b298 #f6e9dc; }
 /* ---------- Testimonials & feedback ---------- */
 .testimonials-section {
   padding: 80px 7% 60px;
-  background: linear-gradient(180deg, #fbf7f2 0%, #fff 30%, #fdf3e8 100%);
+  background:
+    radial-gradient(circle at 12% 20%, #fbe7d870 0%, transparent 40%),
+    linear-gradient(180deg, #f8ede1 0%, #fdf8f3 38%, #fbf1e6 100%);
 }
 .testimonial-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
-.testimonial-card { padding: 26px 22px; background: #fff; border: 1px solid #eee0d4; }
+.testimonial-card {
+  padding: 26px 22px; background: linear-gradient(170deg, #fffdf9 0%, #fff6ec 100%); border: 1px solid #f0e2d5;
+  box-shadow: 0 10px 26px #7a2e2e0d;
+}
 .testimonial-photo { width: 44px; height: 44px; border-radius: 50%; overflow: hidden; margin-bottom: 12px; }
 .testimonial-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .testimonial-stars { display: flex; gap: 3px; color: var(--gold); margin-bottom: 12px; }
@@ -724,7 +741,13 @@ html { scrollbar-color: #c9b298 #f6e9dc; }
 .quick-view-share-note { margin: 0; color: #9b8980; font-size: 12px; overflow-wrap: anywhere; }
 
 /* ---------- Reels ---------- */
-.reels-section { padding: 70px 7%; }
+.reels-section {
+  padding: 70px 7%;
+  background:
+    radial-gradient(circle at 85% 12%, #f3d9c66b 0%, transparent 42%),
+    radial-gradient(circle at 8% 90%, #efe0cf80 0%, transparent 45%),
+    linear-gradient(180deg, #fbf7f2 0%, #f8ede1 100%);
+}
 @property --fade-start { syntax: "<length>"; inherits: false; initial-value: 0px; }
 @property --fade-end { syntax: "<length>"; inherits: false; initial-value: 0px; }
 .reels-carousel { position: relative; }
@@ -776,6 +799,18 @@ html { scrollbar-color: #c9b298 #f6e9dc; }
 .reels-arrow-next { right: -8px; }
 .reels-arrow:hover:not(:disabled) { background: var(--maroon); color: #fff8f1; transform: scale(1.08); }
 .reels-arrow:disabled { opacity: 0; pointer-events: none; }
+
+/* Tablet and desktop: a left-aligned row of equal reels (phones keep the centred, focused carousel) */
+@media (min-width: 761px) {
+  .reels-carousel.is-scrollable .reels-track { justify-content: flex-start; padding-inline: 6px; }
+  .reels-carousel.is-scrollable .reel-card,
+  .reels-carousel.is-scrollable .reel-card.is-active {
+    transform: none; opacity: 1; scroll-snap-align: start; box-shadow: 0 14px 34px #7a2e2e1f;
+  }
+  .reels-carousel.is-scrollable .reel-card:hover { box-shadow: 0 22px 44px #7a2e2e2e; }
+  .reels-arrow-prev { left: -22px; }
+  .reels-arrow-next { right: -22px; }
+}
 
 .reels-dots { display: flex; justify-content: center; gap: 8px; margin-top: 6px; }
 .reels-dots button {

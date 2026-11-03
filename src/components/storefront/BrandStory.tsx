@@ -17,7 +17,7 @@ export function BrandStory() {
           Some pieces become part of your everyday story. POIGAI is about finding
           those little details that make you feel a little more like yourself.
         </p>
-        <span className="story-tamil">அழகு மலரும் இடம்.</span>
+        <span className="story-tamil" lang="ta">அழகு மலரும் இடம்.</span>
       </Reveal>
     </section>
   );
