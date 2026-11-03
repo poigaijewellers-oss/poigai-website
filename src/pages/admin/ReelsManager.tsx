@@ -82,14 +82,19 @@ export default function ReelsManager() {
           {reels.map((reel) => (
             <li key={reel.id}>
               <span>
-                {reel.caption || reel.instagram_url}{" "}
-                <span className={`admin-status ${reel.is_active ? "is-active" : "is-inactive"}`}>
-                  {reel.is_active ? "Visible" : "Hidden"}
-                </span>
+                {reel.caption || reel.instagram_url}
               </span>
               <div className="admin-row-actions">
-                <button onClick={() => handleToggle(reel.id, reel.is_active)} aria-label="Toggle visibility">
-                  {reel.is_active ? "Hide" : "Show"}
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={reel.is_active}
+                  aria-label={`Reel ${reel.caption || reel.instagram_url}: ${reel.is_active ? "shown" : "hidden"}`}
+                  className={`admin-toggle ${reel.is_active ? "is-on" : ""}`}
+                  onClick={() => handleToggle(reel.id, reel.is_active)}
+                >
+                  <span className="admin-toggle-track" aria-hidden="true" />
+                  <span>{reel.is_active ? "Visible" : "Hidden"}</span>
                 </button>
                 <button aria-label="Delete reel" onClick={() => handleDelete(reel.id)}>
                   <Trash2 size={14} />

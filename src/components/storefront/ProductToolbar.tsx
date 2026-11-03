@@ -12,6 +12,9 @@ type ProductToolbarProps = {
   sort: SortOption;
   onSortChange: (sort: SortOption) => void;
   resultCount: number;
+  // Pieces per category id, plus the whole collection, shown as small counts on the chips.
+  categoryCounts: Record<string, number>;
+  totalCount: number;
 };
 
 export function ProductToolbar({
@@ -23,6 +26,8 @@ export function ProductToolbar({
   sort,
   onSortChange,
   resultCount,
+  categoryCounts,
+  totalCount,
 }: ProductToolbarProps) {
   return (
     <div className="product-toolbar">
@@ -56,7 +61,7 @@ export function ProductToolbar({
           role="tab"
           aria-selected={activeCategory === "all"}
         >
-          All
+          <span aria-hidden="true">✦</span> All <small>{totalCount}</small>
         </button>
         {categories.map((category) => (
           <button
@@ -67,7 +72,7 @@ export function ProductToolbar({
             role="tab"
             aria-selected={activeCategory === category.id}
           >
-            {category.name}
+            {category.name} <small>{categoryCounts[category.id] ?? 0}</small>
           </button>
         ))}
       </div>

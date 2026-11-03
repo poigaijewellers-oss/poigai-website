@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { useProducts } from "../../hooks/useProducts";
 import { useCategories } from "../../hooks/useCategories";
-import { deleteProduct } from "../../lib/adminApi";
+import { deleteProduct, setProductActive } from "../../lib/adminApi";
 import { firstImage } from "../../lib/productUtils";
 import { ProductForm } from "./ProductForm";
 import type { Product } from "../../lib/types";
@@ -13,6 +13,18 @@ export default function ProductsManager() {
   const [editing, setEditing] = useState<Product | null>(null);
   const [creating, setCreating] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
+
+  async function handleToggleActive(product: Product) {
+    setBusyId(product.id);
+    try {
+      await setProductActive(product.id, !product.is_active);
+      await refresh();
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : "Couldn't change this product's status.");
+    } finally {
+      setBusyId(null);
+    }
+  }
 
   async function handleDelete(product: Product) {
     if (!window.confirm(`Delete "${product.name}"? This can't be undone.`)) return;
@@ -73,9 +85,18 @@ export default function ProductsManager() {
                   </td>
                   <td>{product.stock}</td>
                   <td>
-                    <span className={`admin-status ${product.is_active ? "is-active" : "is-inactive"}`}>
-                      {product.is_active ? "Active" : "Hidden"}
-                    </span>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={product.is_active}
+                      aria-label={`${product.name}: ${product.is_active ? "shown on the website" : "hidden from the website"}`}
+                      className={`admin-toggle ${product.is_active ? "is-on" : ""}`}
+                      onClick={() => handleToggleActive(product)}
+                      disabled={busyId === product.id}
+                    >
+                      <span className="admin-toggle-track" aria-hidden="true" />
+                      <span>{product.is_active ? "Active" : "Hidden"}</span>
+                    </button>
                   </td>
                   <td className="admin-row-actions">
                     <button aria-label={`Edit ${product.name}`} onClick={() => setEditing(product)}>

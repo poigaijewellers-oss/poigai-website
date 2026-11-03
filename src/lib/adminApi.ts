@@ -45,6 +45,12 @@ export async function deleteProduct(id: string) {
   if (error) throw error;
 }
 
+export async function setProductActive(id: string, isActive: boolean) {
+  const client = requireClient();
+  const { error } = await client.from("products").update({ is_active: isActive }).eq("id", id);
+  if (error) throw error;
+}
+
 export async function uploadProductImage(file: File, options: { cutout?: boolean } = {}): Promise<string> {
   const client = requireClient();
   const compressed = await compressImage(file);

@@ -82,6 +82,14 @@ export default function StorefrontPage() {
     if (shared) openProduct(shared);
   }, [loading]); // run once, as soon as products have loaded
 
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const product of products) {
+      if (product.category_id) counts[product.category_id] = (counts[product.category_id] ?? 0) + 1;
+    }
+    return counts;
+  }, [products]);
+
   const visibleProducts = useMemo(() => {
     let list = products;
 
@@ -156,12 +164,12 @@ export default function StorefrontPage() {
       <section className="shop-section" id="shop">
         <Reveal className="section-heading">
           <div>
-            <p className="eyebrow">A LITTLE SOMETHING FOR YOU</p>
+            <p className="eyebrow" lang="ta">எங்கள் தொகுப்பு</p>
             <h2>
-              The POIGAI <em>edit.</em>
+              Find your <em>little sparkle.</em>
             </h2>
           </div>
-          <p className="section-aside">Small details. Beautifully yours.</p>
+          <p className="section-aside">Everyday jewellery, chosen with love.</p>
         </Reveal>
 
         <ProductToolbar
@@ -173,6 +181,8 @@ export default function StorefrontPage() {
           sort={sort}
           onSortChange={setSort}
           resultCount={visibleProducts.length}
+          categoryCounts={categoryCounts}
+          totalCount={products.length}
         />
 
         <ProductGrid
